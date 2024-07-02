@@ -11,24 +11,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    phoneNo: {
+        type: String,
+        trim: true
+    },
     email: {
         type: String,
-        required: true,
         trim: true,
     },
-    password: {
-        type: String,
-        required: true,
-    },
-    // additionalDetails: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: "Profile"
-    // },
-    // profileImage: {
-    //     type: String,
-    //     required: true,
-    // },
     token: {
         type: String,
     },
