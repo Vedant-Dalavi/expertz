@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const carSchema = new mongoose.Schema({
-    carName: {
+const bikeSchema = new mongoose.Schema({
+    bikeName: {
         type: String,
         required: true,
         trim: true,
@@ -14,7 +14,6 @@ const carSchema = new mongoose.Schema({
             }
         }
     ]
-
 })
 
-module.exports = mongoose.model("Cars", carSchema)
+module.exports = mongoose.model("Bikes", bikeSchema)

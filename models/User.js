@@ -19,12 +19,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    vehicle: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Vehicle"
+        }
+    ],
     token: {
         type: String,
-    },
-    resetPasswordExpires: {
-        type: Date,
-    },
+    }
 })
 
 module.exports = mongoose.model("User", userSchema)

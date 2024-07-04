@@ -4,9 +4,10 @@ const router = express.Router()
 
 // Import the required controllers and middleware functions
 const {
-    CarsInfo,
-    addCar
-} = require("../controllers/Cars")
+    VehiclesInfo,
+    addCar,
+    addBike
+} = require("../controllers/Vehicles")
 
 
 const { auth } = require("../middleware/auth")
@@ -18,11 +19,12 @@ const { auth } = require("../middleware/auth")
 // ********************************************************************************************************
 
 // get all cars
-router.get("/get-car", CarsInfo);
+router.get("/", VehiclesInfo);
 
-// insert a car in user's cars
 
-router.put("/addcar", addCar);
+// insert a car/bike in user's cars/bike
+router.put("/add-car", addCar);
+router.put("/add-bike", addBike);
 
 
 module.exports = router

@@ -1,14 +1,14 @@
-const Cars = require('../models/Cars');
+const Cars = require('../models/Bikes');
 const User = require("../models/User")
 const jwt = require("jsonwebtoken");
 
-exports.CarsInfo = async (req, res) => {
+exports.BikeInfo = async (req, res) => {
 
     try {
 
-        const carData = await Cars.find();
+        const bikeData = await Cars.find();
 
-        if (!carData) {
+        if (!bikeData) {
             return res.status(400).json({
                 success: false,
                 message: "No Cars Found"
@@ -18,51 +18,49 @@ exports.CarsInfo = async (req, res) => {
         return res.status(200).json({
             success: true,
             messageg: "Car data fectched successfully",
-            data: carData
+            data: bikeData
         })
 
     }
     catch (error) {
-        console.log("Error while fetchin carData" + error);
+        console.log("Error while fetchin bikedata" + error);
         return res.status(500).json({
             success: false,
-            message: "Error while fetching car data",
+            message: "Error while fetching car car data",
 
         })
-
     }
 
 
 };
 
-exports.addCar = async (req, res) => {
+exports.addBike = async (req, res) => {
     try {
 
-        const { brand, carName, carNo, model, userId } = req.body;
+        const { brand, bikeName, bikeNo, model, userId } = req.body;
 
-        if (!brand || !carName || !model || !carNo || !userId) {
-            return res.status(206).json({
+        if (!brand || !bikeName || !bikeNo || !model || !userId) {
+            return res.send(206).json({
                 success: false,
                 message: "Enter full car details"
             })
         }
 
-        newCar = { brand: brand, carName: carName, carNo: carNo, model: model };
-        const user = await User.findByIdAndUpdate({ _id: userId }, { $push: { cars: newCar } });
+        const newBikes = { brand: brand, bikeName: bikeName, bikeNo: bikeNo, model: model };
+        const user = await User.findByIdAndUpdate({ _id: userId }, { $push: { bikes: newBike } });
+
 
         return res.status(200).json({
             success: true,
-            message: "car updated successfully"
+            message: "Bike updated successfully"
         })
 
 
     } catch (error) {
-
-        console.log("Error in updating user cars");
+        console.log("Error in updating user bike");
         return res.status(500).json({
             success: true,
             message: error,
         })
-
     }
 }
