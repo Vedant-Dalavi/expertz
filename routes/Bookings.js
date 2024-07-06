@@ -7,7 +7,8 @@ const {
     newBooking,
     getUserBooking,
     updateBooking,
-    cancelBooking
+    cancelBooking,
+    getAllBooking
 } = require("../controllers/Booking")
 
 
@@ -26,6 +27,7 @@ router.post("/new-booking", auth, newBooking);
 router.get("/user-booking", auth, getUserBooking);
 router.put("/update-booking", auth, updateBooking);
 router.delete("/delete-booking", auth, cancelBooking);
+router.get("/", getAllBooking);
 
 
 module.exports = router

@@ -168,3 +168,32 @@ exports.cancelBooking = async (req, res) => {
 
     }
 }
+
+
+exports.getAllBooking = async (req, res) => {
+    try {
+
+        const bookings = await Booking.find();
+
+        if (!bookings) {
+            return res.status(404).json({
+                success: false,
+                message: "No Booking found In DB"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "All Booking fetched Successfully",
+            bookings
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching all bookings ${error}`
+        })
+
+    }
+}
