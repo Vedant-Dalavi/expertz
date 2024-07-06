@@ -2,8 +2,6 @@ const Vehicles = require('../models/Vehicle');
 const User = require("../models/User")
 const jwt = require("jsonwebtoken");
 
-
-
 // ALL Vehicle Info
 exports.VehiclesInfo = async (req, res) => {
     try {
@@ -16,7 +14,6 @@ exports.VehiclesInfo = async (req, res) => {
             });
         }
 
-        // console.log(vehicleData);
 
         return res.status(200).json({
             success: true,
@@ -36,17 +33,21 @@ exports.VehiclesInfo = async (req, res) => {
 exports.addCar = async (req, res) => {
     try {
 
-        const { brand, carName, carNo, model, userId } = req.body;
+        const { brand, vehicleName, vehicleNo, model, userId } = req.body;
 
-        if (!brand || !carName || !model || !carNo || !userId) {
+        if (!brand || !vehicleName || !model || !vehicleNo || !userId) {
             return res.status(206).json({
                 success: false,
                 message: "Enter full car details"
             })
         }
 
-        newCar = { brand: brand, carName: carName, carNo: carNo, model: model };
-        const user = await User.findByIdAndUpdate({ _id: userId }, { $push: { cars: newCar } });
+        newCar = { brand: brand, vehicleName: vehicleName, vehicleNo: vehicleNo, model: model };
+        const user = await User.findByIdAndUpdate({ _id: userId },
+            {
+                $push:
+                    { vehicle: newCar }
+            });
 
         return res.status(200).json({
             success: true,
@@ -56,7 +57,7 @@ exports.addCar = async (req, res) => {
 
     } catch (error) {
 
-        console.log("Error in updating user cars");
+        console.log("Error in updating user cars" + error);
         return res.status(500).json({
             success: true,
             message: error,
@@ -78,7 +79,7 @@ exports.addBike = async (req, res) => {
             })
         }
 
-        const newBikes = { brand: brand, bikeName: bikeName, bikeNo: bikeNo, model: model };
+        const newBike = { brand: brand, bikeName: bikeName, bikeNo: bikeNo, model: model };
         const user = await User.findByIdAndUpdate({ _id: userId }, { $push: { bikes: newBike } });
 
 

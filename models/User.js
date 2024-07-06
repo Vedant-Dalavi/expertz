@@ -21,8 +21,18 @@ const userSchema = new mongoose.Schema({
     },
     vehicle: [
         {
-            type: mongoose.Types.ObjectId,
-            ref: "Vehicle"
+            brand: {
+                type: String
+            },
+            vehicleName: {
+                type: String
+            },
+            model: {
+                type: String
+            },
+            vehicleNo: {
+                type: String
+            }
         }
     ],
     token: {

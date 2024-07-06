@@ -1,9 +1,9 @@
 const { instance } = require("../config/razorpay");
-const Course = require("../models/Cars");
+const Course = require("../models/Vehicle");
 const User = require("../models/User");
-const mailSender = require("../utils/mailSender");
+// const mailSender = require("../utils/mailSender");
 const { default: mongoose } = require("mongoose");
-const { courseEnrollmentEmail } = require("../mail/templates/courseEnrollmentEmail");
+// const { courseEnrollmentEmail } = require("../mail/templates/courseEnrollmentEmail");
 
 
 
@@ -41,12 +41,12 @@ exports.capturePayment = async (req, res) => {
             // is user already enrolled for same course
             // const uid = new mongoose.Types.ObjectId(userId);
 
-            if (course.studentEnrolled.includes(userId)) {
-                return res.json({
-                    success: false,
-                    message: "Student is already enrolled",
-                })
-            }
+            // if (course.studentEnrolled.includes(userId)) {
+            //     return res.json({
+            //         success: false,
+            //         message: "Student is already enrolled",
+            //     })
+            // }
 
         } catch (error) {
 

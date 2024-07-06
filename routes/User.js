@@ -36,7 +36,7 @@ router.post("/sendotp", sendotp)
 router.post("/verify-otp", verifyOtp);
 
 // Route for Changing the password
-router.post("/changepassword", auth, changePassword)
+// router.post("/changepassword", auth, changePassword)
 
 // ********************************************************************************************************
 //                                      Reset Password

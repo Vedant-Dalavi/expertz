@@ -8,17 +8,37 @@ const vehicleSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    cars: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Cars"
-
-        }
+    cars: [{
+        carName: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        models: [
+            {
+                model: {
+                    type: String,
+                    required: true,
+                }
+            }
+        ]
+    }
     ],
     bikes: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Bikes"
+            bikeName: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            models: [
+                {
+                    model: {
+                        type: String,
+                        required: true,
+                    }
+                }
+            ]
 
         }
     ],

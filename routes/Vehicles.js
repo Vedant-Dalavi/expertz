@@ -9,6 +9,10 @@ const {
     addBike
 } = require("../controllers/Vehicles")
 
+const {
+    newBooking
+} = require("../controllers/Booking")
+
 
 const { auth } = require("../middleware/auth")
 
@@ -25,6 +29,14 @@ router.get("/", VehiclesInfo);
 // insert a car/bike in user's cars/bike
 router.put("/add-car", addCar);
 router.put("/add-bike", addBike);
+
+
+//  ******************************************************************************************************
+//                                  Booking Routes
+// *******************************************************************************************************
+
+
+router.post("/new-booking", newBooking);
 
 
 module.exports = router

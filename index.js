@@ -5,6 +5,7 @@ const userRoutes = require("./routes/User");
 // const carRoutes = require("./routes/Cars");
 // const bikeRoutes = require("./routes/Bikes");
 const vehicleRoute = require("./routes/Vehicles");
+const bookingRoute = require("./routes/Bookings");
 // const profileRoutes = require("./routes/Profile");
 // const paymentRoutes = require("./routes/Payments");
 // const courseRoutes = require("./routes//Course");
@@ -43,6 +44,7 @@ app.use(
 // cloudinaryConnect();
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/vehicles", vehicleRoute);
+app.use("/api/v1/booking", bookingRoute);
 // app.use("/api/v1/bikes", bikeRoutes);
 // app.use("/api/v1/profile", profileRoutes);
 // app.use("/api/v1/course", courseRoutes);

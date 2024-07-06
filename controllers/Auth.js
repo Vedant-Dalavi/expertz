@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const OTP = require("../models/OTP");
+const Worker = require("../models/worker");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
 // const mailSender = require("../utils/mailSender");
@@ -87,13 +88,40 @@ exports.verifyOtp = async (req, res) => {
             })
         }
 
-        return res.status(201).json({
+        const user = await User.findOne({ phoneNo });
+        console.log(user);
+        if (!user) {
+            return res.send({
+                success: true,
+                message: "user is not registered",
+                data: false
+            })
+        }
+
+
+        //    generate token
+        const token = jwt.sign({ email: user.phoneNo, id: user._id },
+            process.env.JWT_SECRET, { expiresIn: "10h" });
+
+        user.token = token;
+        user.password = undefined;
+
+
+        const options = {
+            expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        }
+
+        // generate cookie and send response
+        res.cookie("token", token, options).status(200).json({
             success: true,
-            message: "OTP verified succesfully"
-        })
+            message: "User logged in successfully",
+            token: token,
+            user: user,
+        });
 
     } catch (error) {
-        console.log("Error in verifying OTP");
+        console.log("Error in verifying OTP" + error);
 
         return res.status(500).json({
             success: false,
@@ -319,4 +347,63 @@ exports.changePassword = async (req, res) => {
         });
     }
 };
+
+exports.workerSignup = async (req, res) => {
+    try {
+        const { firstName, lastName, phoneNo, email, alternatePhoneNo, password, confirmPassword } = req.body;
+
+        if (!firstName || !lastName || !phoneNo || !email || !alternatePhoneNo || !password || !confirmPassword) {
+            return res.status(500).json({
+                success: false,
+                message: "Enter all details"
+            })
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords and confirm Password does not match"
+            })
+        }
+
+
+        const existingUser = await User.findOne({ phoneNo });
+
+        if (existingUser) {
+            return res.status(401).json({
+                success: false,
+                message: "User already registered"
+            })
+        }
+
+        const hashPassword = await bcrypt.hash(password, 10);
+
+
+        const newWorker = await Worker.create({
+            firstName,
+            lastName,
+            phoneNo: phoneNo,
+            alternatePhoneNo: alternatePhoneNo || "",
+            email,
+            password: hashPassword,
+            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName} ${lastName}`
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "User registered Successfully",
+            newWorker,
+
+        })
+    } catch (error) {
+
+        console.log("Error in creating worker : ", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Worker can not register please try again later",
+        })
+
+    }
+
+}
 
