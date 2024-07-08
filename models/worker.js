@@ -44,7 +44,7 @@ const workerSchema = new mongoose.Schema({
     },
     workingArea: {
         type: String,
-        required: true
+        // required: true
     },
     password: {
         type: String,

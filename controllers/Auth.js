@@ -58,20 +58,19 @@ exports.sendotp = async (req, res) => {
 };
 
 exports.verifyOtp = async (req, res) => {
-
     try {
-
-        const { otp, phoneNo } = req.body
+        const { otp, phoneNo } = req.body;
 
         if (!otp) {
             return res.status(505).json({
                 success: false,
-                message: "fill otp"
-            })
+                message: "fill otp",
+            });
         }
 
-
-        const recentOtp = await OTP.findOne({ phoneNo }).sort({ createdAt: -1 }).limit(1);
+        const recentOtp = await OTP.findOne({ phoneNo })
+            .sort({ createdAt: -1 })
+            .limit(1);
 
         console.log(recentOtp);
         // validate OTP
@@ -79,13 +78,12 @@ exports.verifyOtp = async (req, res) => {
             return res.status(401).json({
                 success: false,
                 message: "OTP Not Found",
-            })
-        }
-        else if (otp !== recentOtp.otp) {
+            });
+        } else if (otp !== recentOtp.otp) {
             return res.status(401).json({
                 success: false,
                 message: "OTP does not match",
-            })
+            });
         }
 
         const user = await User.findOne({ phoneNo });
@@ -94,23 +92,24 @@ exports.verifyOtp = async (req, res) => {
             return res.send({
                 success: true,
                 message: "user is not registered",
-                data: false
-            })
+                data: false,
+            });
         }
 
-
         //    generate token
-        const token = jwt.sign({ email: user.phoneNo, id: user._id },
-            process.env.JWT_SECRET, { expiresIn: "10h" });
+        const token = jwt.sign(
+            { email: user.phoneNo, id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "10h" }
+        );
 
         user.token = token;
         user.password = undefined;
 
-
         const options = {
             expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
             httpOnly: true,
-        }
+        };
 
         // generate cookie and send response
         res.cookie("token", token, options).status(200).json({
@@ -119,129 +118,100 @@ exports.verifyOtp = async (req, res) => {
             token: token,
             user: user,
         });
-
     } catch (error) {
         console.log("Error in verifying OTP" + error);
 
         return res.status(500).json({
             success: false,
-            message: "OTP verification failed"
-        })
-
+            message: "OTP verification failed",
+        });
     }
-
-
-
-}
-
-
+};
 
 // signUp
 exports.signup = async (req, res, next) => {
-
     try {
         // fetch data from req body
 
-        const {
-            firstName,
-            lastName,
-            email,
-            phoneNo
-        } = req.body;
-
+        const { firstName, lastName, email, phoneNo } = req.body;
 
         // validate data
 
         if (!firstName || !lastName) {
             return res.status(400).json({
                 success: false,
-                message: "Please fill all the fields"
-            })
+                message: "Please fill all the fields",
+            });
         }
-
-
-
 
         const user = await User.create({
             firstName,
             lastName,
             email,
             phoneNo,
-            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName} ${lastName}`
+            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName} ${lastName}`,
         });
 
         return res.status(200).json({
             success: true,
             message: "User registered Successfully",
             user,
-
-        })
-
+        });
     } catch (error) {
-
         console.log("Error in creating user : ", error.message);
         return res.status(500).json({
             success: false,
             message: "user can not register please try again later",
-        })
-
-
+        });
     }
-}
-
-
+};
 
 // login
 
 exports.login = async (req, res, next) => {
     try {
-
         // fetch data from body
 
-        const {
-            email,
-            password
-        } = req.body;
+        const { email, password } = req.body;
 
         // validate data
 
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Please fill all the fields"
-            })
+                message: "Please fill all the fields",
+            });
         }
 
         // check if user exists or not
 
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email });
         // .populate("additionalDetails");
 
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: "User is not registered please sign up first"
-            })
+                message: "User is not registered please sign up first",
+            });
         }
-
 
         // check password
 
         if (await bcrypt.compare(password, user.password)) {
-
-
             //    generate token
-            const token = jwt.sign({ email: user.email, id: user._id, accountType: "vedant" },
-                process.env.JWT_SECRET, { expiresIn: "10h" });
+            const token = jwt.sign(
+                { email: user.email, id: user._id, accountType: "vedant" },
+                process.env.JWT_SECRET,
+                { expiresIn: "10h" }
+            );
 
             user.token = token;
             user.password = undefined;
 
-
             const options = {
                 expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
-            }
+            };
 
             // generate cookie and send response
             res.cookie("token", token, options).status(200).json({
@@ -250,29 +220,20 @@ exports.login = async (req, res, next) => {
                 token: token,
                 user: user,
             });
-
-        }
-        else {
+        } else {
             return res.status(401).json({
                 success: false,
-                message: "Password is incorrect"
+                message: "Password is incorrect",
             });
         }
-
-
-
-
     } catch (error) {
         console.log("Error in login", error.message);
         return res.status(500).json({
             success: false,
             message: "login failed please try again later",
-        })
-
+        });
     }
-}
-
-
+};
 
 // change password
 
@@ -350,34 +311,48 @@ exports.changePassword = async (req, res) => {
 
 exports.workerSignup = async (req, res) => {
     try {
-        const { firstName, lastName, phoneNo, email, alternatePhoneNo, password, confirmPassword } = req.body;
+        const {
+            firstName,
+            lastName,
+            phoneNo,
+            email,
+            alternatePhoneNo,
+            password,
+            confirmPassword,
+        } = req.body;
 
-        if (!firstName || !lastName || !phoneNo || !email || !alternatePhoneNo || !password || !confirmPassword) {
+        if (
+            !firstName ||
+            !lastName ||
+            !phoneNo ||
+            !email ||
+            !alternatePhoneNo ||
+            !password ||
+            !confirmPassword
+        ) {
             return res.status(500).json({
                 success: false,
-                message: "Enter all details"
-            })
+                message: "Enter all details",
+            });
         }
 
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
-                message: "Passwords and confirm Password does not match"
-            })
+                message: "Passwords and confirm Password does not match",
+            });
         }
 
-
-        const existingUser = await User.findOne({ phoneNo });
-
+        const existingUser = await Worker.findOne({ phoneNo });
+        console.log("Existing User: " + existingUser)
         if (existingUser) {
             return res.status(401).json({
                 success: false,
-                message: "User already registered"
-            })
+                message: "User already registered",
+            });
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-
 
         const newWorker = await Worker.create({
             firstName,
@@ -386,24 +361,69 @@ exports.workerSignup = async (req, res) => {
             alternatePhoneNo: alternatePhoneNo || "",
             email,
             password: hashPassword,
-            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName} ${lastName}`
-        })
+            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName}${lastName}`,
+        });
 
         return res.status(200).json({
             success: true,
             message: "User registered Successfully",
             newWorker,
-
-        })
+        });
     } catch (error) {
-
         console.log("Error in creating worker : ", error.message);
         return res.status(500).json({
             success: false,
             message: "Worker can not register please try again later",
-        })
-
+        });
     }
+};
 
-}
+exports.workerLogin = async (req, res) => {
+    try {
+        const { phoneNo, password } = req.body;
 
+        if (!phoneNo || !password) {
+            return res.status(404).josn({
+                success: false,
+                message: "Enter all details",
+            });
+        }
+
+        const user = await Worker.findOne({ phoneNo });
+
+        if (await bcrypt.compare(password, user.password)) {
+            //    generate token
+
+            const token = jwt.sign(
+                { phoneNo: user.phoneNo, id: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: "10h" }
+            );
+            user.token = token;
+            user.password = undefined;
+
+            const options = {
+                expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+            };
+
+            // generate cookie and send response
+            res.cookie("token", token, options).status(200).json({
+                success: true,
+                message: "User logged in successfully",
+                token: token,
+                user: user,
+            });
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Password is incorrect",
+            });
+        }
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: `Error in worker login: ${error}`,
+        });
+    }
+};
