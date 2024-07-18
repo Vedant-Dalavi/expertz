@@ -25,6 +25,10 @@ const workerSchema = new mongoose.Schema({
     image: {
         type: String
     },
+    dob: {
+        type: Date,
+        // required: true
+    },
     addressProof: [
         {
             address: {

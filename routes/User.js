@@ -41,6 +41,8 @@ router.post("/verify-otp", verifyOtp);
 
 router.get("/users", getAllUser);
 
+// router.get("/users", getAllUser);
+
 
 
 // ********************************************************************************************************

@@ -2,13 +2,10 @@ const express = require('express');
 const app = express();
 
 const userRoutes = require("./routes/User");
-// const carRoutes = require("./routes/Cars");
-// const bikeRoutes = require("./routes/Bikes");
+
 const vehicleRoute = require("./routes/Vehicles");
 const bookingRoute = require("./routes/Bookings");
-// const profileRoutes = require("./routes/Profile");
-// const paymentRoutes = require("./routes/Payments");
-// const courseRoutes = require("./routes//Course");
+
 
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
@@ -45,19 +42,36 @@ app.use(
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/vehicles", vehicleRoute);
 app.use("/api/v1/bookings", bookingRoute);
-// app.use("/api/v1/bikes", bikeRoutes);
-// app.use("/api/v1/profile", profileRoutes);
-// app.use("/api/v1/course", courseRoutes);
-// app.use("/api/v1/payment", paymentRoutes);
+
 
 // /default
 
+// app.get("/", (req, res) => {
+//     return res.json()({
+//         success: true,
+//         message: "Your server is up and running....."
+//     })
+// })
+
+// ***********************************************************************************************
+const path = require("path")
+const multer = require('multer')
+const upload = multer({ dest: 'http://expertz.softtronix.co.in/assests/profileImages/' })
+
+app.set("view engine", "ejs")
+app.set("views", path.resolve("./views"))
+
 app.get("/", (req, res) => {
-    return res.json()({
-        success: true,
-        message: "Your server is up and running....."
-    })
+    return res.render("homepage")
 })
+
+app.post('/upload', upload.single('profileImg'), function (req, res) {
+    console.log(req.body)
+    console.log(req.file)
+
+})
+
+// ***********************************************************************************************
 
 app.listen(PORT, () => {
     console.log(`app is running at ${PORT}`);

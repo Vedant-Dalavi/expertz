@@ -26,3 +26,41 @@ exports.getAllUser = async (req, res) => {
 
     }
 }
+
+// exports.getUserDetails = async (req, res) => {
+//     try {
+
+//         const userId = req.user.id;
+
+//         if (!userId) {
+//             return res.status(500).json({
+//                 success: false,
+//                 message: "userId not found"
+//             })
+//         }
+
+//         const userDetail = await User.findById({ _id: userId });
+
+//         if (!userDetail) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "User not found with given userId"
+
+//             })
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "User Details fetched Successfully".
+//                 user
+//         })
+
+//     } catch (error) {
+
+//         return res.status(500).json({
+//             success: false,
+//             message: `Error while fetching user details: ${error}`
+//         })
+
+//     }
+// }
