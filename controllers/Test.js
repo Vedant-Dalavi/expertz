@@ -1,34 +1,27 @@
-// const multer = require('multer')
 
-// exports.uploadImg = upload.single('profileImg'), (req, res) => {
-//     try {
+exports.loadHomepage = async (req, res) => {
+    try {
+        res.render("homepage");
+    } catch (error) {
+        console.error("Error rendering homepage:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
 
-//         console.log(req.body);
-//         console.log(req.file);
+exports.uploadImg = async (req, res) => {
+    try {
+        console.log("body: ", req.body);
+        console.log("file: ", req.file);
 
-//         // const { file } = req.files
+        res.status(200).json({
+            success: true,
+            message: "Img Uploaded successfully",
+            fileInfo: req.file
+        })
+        return res.redirect("/test");
 
-//         // const storage = multer.diskStorage({
-//         //     destination: function (req, file, cb) {
-//         //         file = req.files.file
-//         //         cb(null, 'http://expertz.softtronix.co.in/assests/profileImages/')
-//         //     },
-//         //     filename: function (req, file, cb) {
-//         //         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//         //         cb(null, file.originalname + '-' + uniqueSuffix)
-//         //     }
-//         // })
-
-//         // const upload = multer({ storage })
-//         // upload();
-
-//     } catch (error) {
-
-//         return res.status(500).json({
-//             success: false,
-//             message: `Error in uploading image: ${error}`
-//         })
-
-//     }
-// }
-
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};

@@ -54,6 +54,14 @@ const workerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    accountType: {
+        type: String,
+        default: "Worker"
+    },
+    registeredOn: {
+        type: Date,
+        default: Date.now(),
+    },
     token: {
         type: String,
     },

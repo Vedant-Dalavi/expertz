@@ -35,6 +35,14 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    registeredOn: {
+        type: Date,
+        default: Date.now()
+    },
+    accountType: {
+        type: String,
+        default: "User"
+    },
     token: {
         type: String,
     }

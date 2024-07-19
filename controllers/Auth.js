@@ -4,6 +4,7 @@ const OTP = require("../models/OTP");
 const Worker = require("../models/worker");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
+const Admin = require("../models/Admin");
 // const mailSender = require("../utils/mailSender");
 // const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 // const Profile = require("../models/Profile");
@@ -309,6 +310,8 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+// Worker
+
 exports.workerSignup = async (req, res) => {
     try {
         const {
@@ -424,6 +427,130 @@ exports.workerLogin = async (req, res) => {
         return res.status(401).json({
             success: false,
             message: `Error in worker login: ${error}`,
+        });
+    }
+};
+
+// Admin 
+
+exports.adminSignup = async (req, res, next) => {
+    try {
+        // fetch data from req body
+
+        const { adminName, email, phoneNo, password, confirmPassword } = req.body;
+
+        // validate data
+
+        if (!adminName || !email || !phoneNo || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords and confirm Password does not match",
+            });
+        }
+
+        const existingAdmin = await Admin.findOne({ email });
+        console.log("Existing admin: " + existingAdmin)
+        if (existingAdmin) {
+            return res.status(401).json({
+                success: false,
+                message: "Admin already registered",
+            });
+        }
+
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const newAdmin = await Admin.create({
+            adminName,
+            phoneNo,
+            email,
+            password: hashPassword,
+            image: `https://api.dicebear.com/8.x/initials/svg?seed=${adminName}`,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "User registered Successfully",
+            newAdmin,
+        });
+    } catch (error) {
+        console.log("Error in creating admin : ", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Admin can not register please try again later",
+        });
+    }
+};
+
+exports.adminLogin = async (req, res, next) => {
+    try {
+        // fetch data from body
+
+        const { email, password } = req.body;
+
+        // validate data
+
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please fill all the fields",
+            });
+        }
+
+        // check if user exists or not
+
+        const admin = await Admin.findOne({ email });
+        // .populate("additionalDetails");
+
+        if (!admin) {
+            return res.status(401).json({
+                success: false,
+                message: "User is not registered please sign up first",
+            });
+        }
+
+        // check password
+
+        if (await bcrypt.compare(password, admin.password)) {
+            //    generate token
+            const token = jwt.sign(
+                { email: admin.email, id: admin._id, accountType: "Admin" },
+                process.env.JWT_SECRET,
+                { expiresIn: "10h" }
+            );
+
+            admin.token = token;
+            admin.password = undefined;
+
+            const options = {
+                expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+            };
+
+            // generate cookie and send response
+            res.cookie("token", token, options).status(200).json({
+                success: true,
+                message: "Admin logged in successfully",
+                token: token,
+                admin,
+            });
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Password is incorrect",
+            });
+        }
+    } catch (error) {
+        console.log("Error in admin login", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Admin login failed please try again later",
         });
     }
 };

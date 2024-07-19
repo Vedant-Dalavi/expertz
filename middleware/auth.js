@@ -51,13 +51,13 @@ exports.auth = async (req, res, next) => {
 
 // isStudent
 
-exports.isStudent = async (res, req, next) => {
+exports.isUser = async (res, req, next) => {
 
     try {
 
         // fetch the role of user from req body
 
-        if (req.user.accountType !== "Student") {
+        if (req.user.accountType !== "User") {
             return res.status(401).json({
                 success: false,
                 message: "this is protected route for student only "
@@ -79,23 +79,20 @@ exports.isStudent = async (res, req, next) => {
 
 // iInstructor
 
-exports.isInstructor = async (req, res, next) => {
+exports.isAdmin = async (req, res, next) => {
 
     try {
 
         // fetch the role of user from req body
-
-        if (req.user.accountType !== "Instructor") {
+        if (req.user.accountType !== "Admin") {
             return res.status(401).json({
                 success: false,
-                message: "this is protected route for Instructor only "
+                message: "this is protected route for admin only "
             });
         }
 
         next();
-
     } catch (error) {
-
         return res.status(500).json({
             success: false,
             message: "user role cannot be verified ,please try again later"
@@ -110,28 +107,28 @@ exports.isInstructor = async (req, res, next) => {
 
 // isAdmin
 
-exports.isAdmin = async (req, res, next) => {
+// exports.isAdmin = async (req, res, next) => {
 
-    try {
+//     try {
 
-        // fetch the role of user from req body
-        // console.log(req.user.accountType);
+//         // fetch the role of user from req body
+//         // console.log(req.user.accountType);
 
-        if (req.user.accountType !== "Admin") {
-            return res.status(401).json({
-                success: false,
-                message: "this is protected route for Admin only "
-            });
-        }
-        next();
+//         if (req.user.accountType !== "Admin") {
+//             return res.status(401).json({
+//                 success: false,
+//                 message: "this is protected route for Admin only "
+//             });
+//         }
+//         next();
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            success: false,
-            message: "user role cannot be verified ,please try again later"
-        });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "user role cannot be verified ,please try again later"
+//         });
 
-    }
+//     }
 
-}
+// }

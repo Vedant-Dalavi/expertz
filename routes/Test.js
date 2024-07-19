@@ -1,12 +1,35 @@
+const express = require('express')
+const router = express.Router()
+const path = require("path");
+const multer = require('multer');
+const fs = require('fs');
 
 
-// const express = require('express')
-// const router = express.Router()
+const { uploadImg, loadHomepage } = require("../controllers/Test");
 
 
-// const { uploadImg } = require("../controllers/Test");
+const uploadsDir = path.join('D:', 'Soft2TechProject', 'Expertz', 'server', 'uploads');
 
-// router.post("/", uploadImg);
+// Ensure uploads directory exists
+if (!fs.existsSync(uploadsDir)) {
+    console.log(`Creating uploads directory at ${uploadsDir}`);
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir);
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${file.originalname.split(".")[0]}-${Date.now()}.${file.originalname.split(".")[1]}`);
+    }
+});
+
+const upload = multer({ storage })
 
 
-// module.exports = router;
+router.post('/', upload.single('profileImg'), uploadImg);
+router.get('/', loadHomepage);
+
+module.exports = router;
