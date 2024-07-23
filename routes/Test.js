@@ -8,7 +8,11 @@ const fs = require('fs');
 const { uploadImg, loadHomepage } = require("../controllers/Test");
 
 
+<<<<<<< HEAD
 const uploadsDir = path.join('uploads');
+=======
+const uploadsDir = path.join(__dirname, 'uploads');
+>>>>>>> bb100c2cc257fec5d64748bebb7bcff8c7488f5e
 
 // Ensure uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
