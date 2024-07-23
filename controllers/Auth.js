@@ -204,7 +204,7 @@ exports.login = async (req, res, next) => {
 
         // validate data
 
-        if (!phoneNo) {
+        if (!phoneNo || !otp) {
             return res.status(400).json({
                 success: false,
                 message: "Please fill all the fields",

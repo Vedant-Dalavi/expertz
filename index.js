@@ -4,7 +4,7 @@ const userRoutes = require("./routes/User");
 const vehicleRoute = require("./routes/Vehicles");
 const bookingRoute = require("./routes/Bookings");
 const adminRoute = require("./routes/Admin");
-const testRoute = require("./routes/Test")
+// const testRoute = require("./routes/Test")
 
 const database = require("./config/database");
 
@@ -36,9 +36,9 @@ app.use(
 
 
 
-// Set view engine
-app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
+// // Set view engine
+// app.set("view engine", "ejs");
+// app.set("views", path.resolve("./views"));
 
 // home route
 
@@ -53,7 +53,7 @@ app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/admin", adminRoute);
 
 // test route
-app.use("/test", testRoute);
+// app.use("/test", testRoute);
 
 app.listen(PORT, () => {
     console.log(`App is running at ${PORT}`);
