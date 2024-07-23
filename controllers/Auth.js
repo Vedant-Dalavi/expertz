@@ -40,8 +40,10 @@ exports.sendotp = async (req, res) => {
         console.log("OTP", otp);
         console.log("Result", result);
         while (result) {
-            otp = otpGenerator.generate(6, {
+            otp = otpGenerator.generate(4, {
                 upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
             });
         }
         const otpPayload = { phoneNo, otp };
@@ -134,24 +136,49 @@ exports.signup = async (req, res, next) => {
     try {
         // fetch data from req body
 
-        const { firstName, lastName, email, phoneNo } = req.body;
+        const { userName, email, phoneNo } = req.body;
 
         // validate data
 
-        if (!firstName || !lastName) {
-            return res.status(400).json({
+        if (!userName || !phoneNo) {
+            return res.status(206).json({
                 success: false,
                 message: "Please fill all the fields",
             });
         }
 
+        // check if user exists or not
+
+        const existingUser = await User.findOne({ phoneNo });
+
+        if (existingUser) {
+            return res.status(401).json({
+                success: false,
+                message: "User already registered"
+            })
+        }
+
+
         const user = await User.create({
-            firstName,
-            lastName,
+            userName,
             email,
             phoneNo,
-            image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName} ${lastName}`,
+            image: `https://api.dicebear.com/8.x/initials/svg?seed=${userName}`,
         });
+
+        const token = jwt.sign(
+            { phoneNo: user.phoneNo, id: user._id, accountType: user.accountType },
+            process.env.JWT_SECRET,
+            { expiresIn: "10h" }
+        );
+
+        user.token = token;
+        user.password = undefined;
+
+        const options = {
+            expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
 
         return res.status(200).json({
             success: true,
@@ -173,20 +200,38 @@ exports.login = async (req, res, next) => {
     try {
         // fetch data from body
 
-        const { email, password } = req.body;
+        const { phoneNo, otp } = req.body;
 
         // validate data
 
-        if (!email || !password) {
+        if (!phoneNo) {
             return res.status(400).json({
                 success: false,
                 message: "Please fill all the fields",
             });
         }
 
+        const recentOtp = await OTP.findOne({ phoneNo })
+            .sort({ createdAt: -1 })
+            .limit(1);
+
+        console.log(recentOtp);
+        // validate OTP
+        if (recentOtp.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "OTP Not Found",
+            });
+        } else if (otp !== recentOtp.otp) {
+            return res.status(401).json({
+                success: false,
+                message: "OTP does not match",
+            });
+        }
+
         // check if user exists or not
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ phoneNo });
         // .populate("additionalDetails");
 
         if (!user) {
@@ -196,37 +241,30 @@ exports.login = async (req, res, next) => {
             });
         }
 
-        // check password
 
-        if (await bcrypt.compare(password, user.password)) {
-            //    generate token
-            const token = jwt.sign(
-                { email: user.email, id: user._id, accountType: "vedant" },
-                process.env.JWT_SECRET,
-                { expiresIn: "10h" }
-            );
+        //    generate token
+        const token = jwt.sign(
+            { phoneNo: user.phoneNo, id: user._id, accountType: user.accountType },
+            process.env.JWT_SECRET,
+            { expiresIn: "10h" }
+        );
 
-            user.token = token;
-            user.password = undefined;
+        user.token = token;
+        user.password = undefined;
 
-            const options = {
-                expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-                httpOnly: true,
-            };
+        const options = {
+            expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+        };
 
-            // generate cookie and send response
-            res.cookie("token", token, options).status(200).json({
-                success: true,
-                message: "User logged in successfully",
-                token: token,
-                user: user,
-            });
-        } else {
-            return res.status(401).json({
-                success: false,
-                message: "Password is incorrect",
-            });
-        }
+        // generate cookie and send response
+        res.cookie("token", token, options).status(200).json({
+            success: true,
+            message: "User logged in successfully",
+            token: token,
+            user: user,
+        });
+
     } catch (error) {
         console.log("Error in login", error.message);
         return res.status(500).json({

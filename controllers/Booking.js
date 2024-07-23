@@ -1,10 +1,12 @@
 const Booking = require("../models/Booking")
+const User = require("../models/User")
 
 exports.newBooking = async (req, res) => {
     try {
 
-        const { userId, date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
+        const { date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
 
+        const userId = req.user.id;
 
         if (!userId || !date || !bookingSlot || !alternateNumber) {
             if (!location.longitude || !location.lattitude || !vehicleDetail) {
@@ -23,6 +25,12 @@ exports.newBooking = async (req, res) => {
             alternateNumber: alternateNumber,
             vehicleDetail: vehicleDetail,
             status: "Pending"
+        })
+
+        const updateUser = await User.findByIdAndUpdate({ _id: userId }, {
+            $push: {
+                bookings: booked_vehicle._id
+            }
         })
 
         return res.status(200).json({

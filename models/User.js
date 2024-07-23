@@ -1,19 +1,14 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    firstName: {
+    userName: {
         type: String,
-        required: true,
-        trim: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
-        trim: true,
+        required: true
     },
     phoneNo: {
-        type: String,
-        trim: true
+        type: Number,
+        trim: true,
+        required: true
     },
     email: {
         type: String,
@@ -33,6 +28,12 @@ const userSchema = new mongoose.Schema({
             vehicleNo: {
                 type: String
             }
+        }
+    ],
+    bookings: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Booking"
         }
     ],
     registeredOn: {

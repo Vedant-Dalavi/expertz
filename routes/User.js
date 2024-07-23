@@ -13,13 +13,14 @@ const {
 
 } = require("../controllers/Auth")
 
+const { auth } = require("../middleware/auth")
+
 const { getAllUser } = require("../controllers/User")
 // const {
 //     resetPasswordToken,
 //     resetPassword,
 // } = require("../controllers/ResetPassword")
 
-const { auth } = require("../middleware/auth")
 
 // Routes for Login, Signup, and Authentication
 
