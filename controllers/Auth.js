@@ -569,6 +569,9 @@ exports.adminLogin = async (req, res, next) => {
             const options = {
                 expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
+                httpOnly: true,
+                secure: true, // Set to true if using HTTPS
+                sameSite: 'Strict'
             };
 
             // generate cookie and send response
