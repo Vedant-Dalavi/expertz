@@ -269,7 +269,7 @@ exports.login = async (req, res, next) => {
         console.log("Error in login", error.message);
         return res.status(500).json({
             success: false,
-            message: "login failed please try again later",
+            message: `login failed please try again: ${error}`,
         });
     }
 };
