@@ -37,11 +37,8 @@ app.use(
 
 
 // // Set view engine
-app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
-app.get("/login",(req,res)=>{
-    res.render('login');
-})
+// app.set("view engine", "ejs");
+// app.set("views", path.resolve("./views"));
 // home route
 
 app.get("/", async (req, res) => {
