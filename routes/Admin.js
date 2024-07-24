@@ -13,12 +13,12 @@ router.post("/admin-signup", adminSignup);
 router.post("/admin-login", adminLogin);
 
 // getAll user 
-router.get("/getalluser",auth, getAllUser)
+router.get("/getalluser", getAllUser)
 // getAllWorker
-router.get("/getallworker",auth, getAllWorker)
+router.get("/getallworker", getAllWorker)
 
 // getAllBookings
-router.get("/getallbookings",auth, getAllBooking)
+router.get("/getallbookings", getAllBooking)
 
 
 module.exports = router
