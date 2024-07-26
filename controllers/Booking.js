@@ -4,9 +4,9 @@ const User = require("../models/User")
 exports.newBooking = async (req, res) => {
     try {
 
-        const { date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
+        const {userId, date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
 
-        const userId = req.user.id;
+        // const userId = req.user.id;
 
         if (!userId || !date || !bookingSlot || !alternateNumber) {
             if (!location.longitude || !location.lattitude || !vehicleDetail) {
