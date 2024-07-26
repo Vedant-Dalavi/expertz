@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-    userId: {
-        type: String,
+    bookedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
+    },
+    serviceName: {
+        type: String,
+        required: true,
     },
     date: {
         type: String,
@@ -12,14 +17,13 @@ const bookingSchema = new mongoose.Schema({
     location:
     {
         longitude: {
-            type: Number,
+            type: String,
             // required: true
 
         },
         lattitude: {
-            type: Number,
+            type: String,
             // required: true
-
         }
     },
     bookingSlot: {
@@ -27,7 +31,7 @@ const bookingSchema = new mongoose.Schema({
         // required: true
     },
     alternateNumber: {
-        type: String,
+        type: Number,
     },
     vehicleDetail:
     {
@@ -49,10 +53,3 @@ const bookingSchema = new mongoose.Schema({
 })
 
 module.exports = mongoose.model("Booking", bookingSchema)
-
-
-// booking slot
-// time
-// alternate mobile num
-// vehicle detail
-

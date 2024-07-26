@@ -23,7 +23,7 @@ const { auth } = require("../middleware/auth")
 // *******************************************************************************************************
 
 
-router.get("/", getAllBooking);
+// router.get("/", getAllBooking);
 router.post("/new-booking", auth, newBooking);
 router.get("/user-booking", auth, getUserBooking);
 router.put("/update-booking", auth, updateBooking);

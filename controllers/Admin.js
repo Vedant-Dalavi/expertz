@@ -84,4 +84,12 @@ exports.getAllBooking = async (req, res) => {
     }
 }
 
+exports.createNewService = async (req,res) =>{
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
 

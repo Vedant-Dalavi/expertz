@@ -62,10 +62,16 @@ const workerSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
+    booking:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Booking"
+        }
+    ],
     token: {
         type: String,
     },
-
+   
 })
 
 module.exports = mongoose.model("Worker", workerSchema)

@@ -246,14 +246,14 @@ exports.login = async (req, res, next) => {
         const token = jwt.sign(
             { phoneNo: user.phoneNo, id: user._id, accountType: user.accountType },
             process.env.JWT_SECRET,
-            { expiresIn: "10h" }
+            { expiresIn: "7d" }
         );
 
         user.token = token;
         user.password = undefined;
 
         const options = {
-            expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            expiresIn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             httpOnly: true,
         };
 
@@ -414,7 +414,7 @@ exports.workerSignup = async (req, res) => {
         console.log("Error in creating worker : ", error.message);
         return res.status(500).json({
             success: false,
-            message: "Worker can not register please try again later",
+            message: `Worker can not register please try again later: ${error}`,
         });
     }
 };

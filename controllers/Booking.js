@@ -18,12 +18,13 @@ exports.newBooking = async (req, res) => {
         }
 
         const booked_vehicle = await Booking.create({
-            userId: userId,
-            date: date,
-            location: location,
-            bookingSlot: bookingSlot,
-            alternateNumber: alternateNumber,
-            vehicleDetail: vehicleDetail,
+            bookedBy: userId,
+            date,
+            serviceName,
+            location,
+            bookingSlot,
+            alternateNumber,
+            vehicleDetail,
             status: "Pending"
         })
 
@@ -178,30 +179,30 @@ exports.cancelBooking = async (req, res) => {
 }
 
 
-exports.getAllBooking = async (req, res) => {
-    try {
+// exports.getAllBooking = async (req, res) => {
+//     try {
 
-        const bookings = await Booking.find();
+//         const bookings = await Booking.find();
 
-        if (!bookings) {
-            return res.status(404).json({
-                success: false,
-                message: "No Booking found In DB"
-            })
-        }
+//         if (!bookings) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "No Booking found In DB"
+//             })
+//         }
 
-        return res.status(200).json({
-            success: true,
-            message: "All Booking fetched Successfully",
-            bookings
-        })
+//         return res.status(200).json({
+//             success: true,
+//             message: "All Booking fetched Successfully",
+//             bookings
+//         })
 
-    } catch (error) {
+//     } catch (error) {
 
-        return res.status(500).json({
-            success: false,
-            message: `Error while fetching all bookings ${error}`
-        })
+//         return res.status(500).json({
+//             success: false,
+//             message: `Error while fetching all bookings ${error}`
+//         })
 
-    }
-}
+//     }
+// }
