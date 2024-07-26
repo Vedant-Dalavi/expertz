@@ -26,12 +26,12 @@ database.connect();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-    cors({
-        origin: "http://localhost:4000",
-        credentials: true,
-    })
-);
+app.use(cors());
+
+// {
+    //     origin: "http://localhost:4000",
+    //     credentials: true,
+    // }
 
 
 
@@ -39,7 +39,6 @@ app.use(
 // // Set view engine
 // app.set("view engine", "ejs");
 // app.set("views", path.resolve("./views"));
-
 // home route
 
 app.get("/", async (req, res) => {

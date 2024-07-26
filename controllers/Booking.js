@@ -4,7 +4,7 @@ const User = require("../models/User")
 exports.newBooking = async (req, res) => {
     try {
 
-        const { date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
+        const {date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
 
         const userId = req.user.id;
 
@@ -203,6 +203,3 @@ exports.cancelBooking = async (req, res) => {
 //             success: false,
 //             message: `Error while fetching all bookings ${error}`
 //         })
-
-//     }
-// }
