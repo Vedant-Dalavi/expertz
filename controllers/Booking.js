@@ -10,7 +10,7 @@ exports.newBooking = async (req, res) => {
         const userId = req.user.id;
 
         if (!userId || !date || !bookingSlot || !alternateNumber) {
-            if (!location.longitude || !location.lattitude || !vehicleDetail) {
+            if (!location.longitude || !location.latitude || !vehicleDetail) {
                 return res.status(500).json({
                     success: false,
                     message: "Enter all field of booking vehicle"
