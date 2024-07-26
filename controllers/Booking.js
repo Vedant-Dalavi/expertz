@@ -6,6 +6,7 @@ exports.newBooking = async (req, res) => {
 
         const {date, location, bookingSlot, alternateNumber, vehicleDetail } = req.body;
 
+        
         const userId = req.user.id;
 
         if (!userId || !date || !bookingSlot || !alternateNumber) {
