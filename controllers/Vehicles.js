@@ -33,7 +33,9 @@ exports.VehiclesInfo = async (req, res) => {
 exports.addCar = async (req, res) => {
     try {
 
-        const { brand, vehicleName, vehicleNo, model, userId } = req.body;
+        const { brand, vehicleName, vehicleNo, model } = req.body;
+
+        const userId = req.user.id;
 
         if (!brand || !vehicleName || !model || !vehicleNo || !userId) {
             return res.status(206).json({
@@ -70,7 +72,9 @@ exports.addCar = async (req, res) => {
 exports.addBike = async (req, res) => {
     try {
 
-        const { brand, bikeName, bikeNo, model, userId } = req.body;
+        const { brand, bikeName, bikeNo, model } = req.body;
+
+        const userId = req.user.id;
 
         if (!brand || !bikeName || !bikeNo || !model || !userId) {
             return res.send(206).json({

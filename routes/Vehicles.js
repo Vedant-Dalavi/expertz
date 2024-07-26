@@ -27,8 +27,8 @@ router.get("/", VehiclesInfo);
 
 
 // insert a car/bike in user's cars/bike
-router.put("/add-car", addCar);
-router.put("/add-bike", addBike);
+router.put("/add-car",auth, addCar);
+router.put("/add-bike",auth, addBike);
 
 
 //  ******************************************************************************************************
