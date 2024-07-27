@@ -4,6 +4,7 @@ const userRoutes = require("./routes/User");
 const vehicleRoute = require("./routes/Vehicles");
 const bookingRoute = require("./routes/Bookings");
 const adminRoute = require("./routes/Admin");
+const workerRoute = require("./routes/Worker");
 // const testRoute = require("./routes/Test")
 
 const database = require("./config/database");
@@ -29,9 +30,9 @@ app.use(cookieParser());
 app.use(cors());
 
 // {
-    //     origin: "http://localhost:4000",
-    //     credentials: true,
-    // }
+//     origin: "http://localhost:4000",
+//     credentials: true,
+// }
 
 
 
@@ -50,6 +51,7 @@ app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/vehicles", vehicleRoute);
 app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/admin", adminRoute);
+app.use("/api/v1/worker", workerRoute);
 
 // test route
 // app.use("/test", testRoute);

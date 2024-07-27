@@ -78,6 +78,10 @@ const workerSchema = new mongoose.Schema({
             // required:true
         }
     },
+    accountType: {
+        type: String,
+        default: "Worker"
+    },
     token: {
         type: String,
     },

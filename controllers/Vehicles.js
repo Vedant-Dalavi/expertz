@@ -44,16 +44,27 @@ exports.addCar = async (req, res) => {
             })
         }
 
+        const user = await User.findOne({ _id: userId });
+
+        if ((!user)) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+
         newCar = { brand, vehicleName, vehicleNo, model };
-        const user = await User.findByIdAndUpdate({ _id: userId },
+        const userUpdate = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
                     { cars: newCar }
-            });
+            }, { new: true });
 
         return res.status(200).json({
             success: true,
-            message: "car updated successfully"
+            message: "car Added successfully",
+            data: user
         })
 
 
@@ -76,22 +87,25 @@ exports.addBike = async (req, res) => {
 
         const userId = req.user.id;
 
-        if (!brand || !bikeName || !bikeNo || !model || !userId) {
+        if (!brand || !vehicleName || !vehicleNo || !model || !userId) {
             return res.send(206).json({
                 success: false,
                 message: "Enter full car details"
             })
         }
 
-        if (!brand || !vehicleName || !model || !vehicleNo || !userId) {
-            return res.status(206).json({
+        const user = await User.findOne({ _id: userId });
+
+        if ((!user)) {
+            return res.status(404).json({
                 success: false,
-                message: "Enter full car details"
+                message: "User not found"
             })
         }
 
+
         newBike = { brand, vehicleName, vehicleNo, model };
-        const user = await User.findByIdAndUpdate({ _id: userId },
+        const userUpdate = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
                     { bikes: newBike }
@@ -99,16 +113,16 @@ exports.addBike = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Bike updated successfully",
-            data: newBike
+            message: "Bike Added successfully",
+            data: user
         })
 
 
     } catch (error) {
         console.log("Error in updating user bike");
         return res.status(500).json({
-            success: true,
-            message: error,
+            success: false,
+            message: `Error while adding new Bike ${error}`,
         })
     }
 }

@@ -49,6 +49,52 @@ exports.auth = async (req, res, next) => {
 }
 
 
+exports.authWorker = async (req, res, next) => {
+
+    try {
+
+        // extract token
+        const token = req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ", "");
+
+        // token missing 
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "No token provided"
+            })
+        }
+
+
+        // verify token
+        try {
+            const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+            console.log(decode);
+            req.worker = decode;
+
+        } catch (error) {
+
+            return res.status(401).json({
+                success: false,
+                message: "token is invalid"
+            });
+
+        }
+        next();
+
+    } catch (error) {
+        console.log("Error in authentication : ", error);
+        return res.status(500).json({
+            success: false,
+            message: "something went wrong while validating token"
+        });
+
+    }
+
+}
+
+
 // isStudent
 
 exports.isUser = async (res, req, next) => {
@@ -102,6 +148,31 @@ exports.isAdmin = async (req, res, next) => {
 
 }
 
+
+exports.isWorker = async (req, res, next) => {
+    try {
+
+        // fetch the role of user from req body
+
+        if (req.worker.accountType !== "Worker") {
+            return res.status(401).json({
+                success: false,
+                message: "this is protected route for Worker only ",
+                worker:req.worker
+            });
+        }
+
+        next();
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: "user role cannot be verified ,please try again later"
+        });
+
+    }
+}
 
 
 

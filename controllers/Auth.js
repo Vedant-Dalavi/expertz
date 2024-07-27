@@ -430,18 +430,18 @@ exports.workerLogin = async (req, res) => {
             });
         }
 
-        const user = await Worker.findOne({ phoneNo });
+        const worker = await Worker.findOne({ phoneNo });
 
-        if (await bcrypt.compare(password, user.password)) {
+        if (await bcrypt.compare(password, worker.password)) {
             //    generate token
 
             const token = jwt.sign(
-                { phoneNo: user.phoneNo, id: user._id },
+                { phoneNo: worker.phoneNo, id: worker._id, accountType: worker.accountType },
                 process.env.JWT_SECRET,
                 { expiresIn: "7d" }
             );
-            user.token = token;
-            user.password = undefined;
+            worker.token = token;
+            worker.password = undefined;
 
             const options = {
                 expiresIn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -453,7 +453,7 @@ exports.workerLogin = async (req, res) => {
                 success: true,
                 message: "User logged in successfully",
                 token: token,
-                user: user,
+                worker: worker,
             });
         } else {
             return res.status(401).json({

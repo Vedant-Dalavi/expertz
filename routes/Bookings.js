@@ -30,4 +30,10 @@ router.put("/update-booking", auth, updateBooking);
 router.delete("/delete-booking", auth, cancelBooking);
 
 
+// *****************************************************************************************************
+//                                 Booking Confirm 
+// ****************************************************************************************************
+
+
+
 module.exports = router

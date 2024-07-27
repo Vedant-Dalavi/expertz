@@ -1,5 +1,6 @@
 const Booking = require("../models/Booking")
-const User = require("../models/User")
+const User = require("../models/User");
+const Worker = require("../models/worker");
 
 exports.newBooking = async (req, res) => {
     try {
@@ -204,15 +205,91 @@ exports.getAllBooking = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: `Error while fetching all bookings ${error}`
-  })
-}
+        })
+    }
 }
 
 
-exports.confirmBooking = async(req,res) =>{
+exports.confirmBooking = async (req, res) => {
     try {
 
+        const { bookingId } = req.body;
+        const workerId = req.worker.id;
+
+        if (!bookingId || !workerId) {
+            return res.status(404).json({
+                success: false,
+                message: "All field are Required"
+            })
+        }
+
+        const worker = await Worker.findOne({ _id: workerId });
+
+        if (!worker) {
+            return res.status(404).json({
+                success: false,
+                message: "worker not found"
+            })
+        }
+
+        const booking = await Booking.findByIdAndUpdate({ _id: bookingId });
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Bookin not found"
+            })
+
+
+        }
+
+        if (booking.status !== "Pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Booking already Confirmed"
+            })
+        }
+
+        booking.status = "Confirmed";
+        booking.acceptedBy = workerId
+
+        await booking.save();
+
+        worker.booking.push(bookingId);
+
+        await worker.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Booking Confirmed",
+        })
+
+
+    } catch (error) {
+        return res.status(200).json({
+            success: false,
+            message: `Error in Confirm Booking : ${error}`
+        })
+
+    }
+}
+
+exports.completeBooking = async (req,res) =>{
+    try {
+
+        const { bookingId } = req.body;
+        const workerId = req.worker.id;
+
+        if (!bookingId || !workerId) {
+            return res.status(404).json({
+                success: false,
+                message: "All field are Required"
+            })
+        }
+
         
+
+
         
     } catch (error) {
         
