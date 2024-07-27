@@ -16,15 +16,14 @@ const bookingSchema = new mongoose.Schema({
     },
     location:
     {
-        latitude: {
+        lat: {
             type: String,
-            // required: true
+            // require:true
         },
-        longitude: {
+        long: {
             type: String,
-            // required: true
-
-        },
+            // required:true
+        }
     },
     bookingSlot: {
         type: String,

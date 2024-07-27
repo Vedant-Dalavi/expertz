@@ -438,13 +438,13 @@ exports.workerLogin = async (req, res) => {
             const token = jwt.sign(
                 { phoneNo: user.phoneNo, id: user._id },
                 process.env.JWT_SECRET,
-                { expiresIn: "10h" }
+                { expiresIn: "7d" }
             );
             user.token = token;
             user.password = undefined;
 
             const options = {
-                expiresIn: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                expiresIn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
             };
 

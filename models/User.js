@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    vehicle: [
+    cars: [
         {
             brand: {
                 type: String
@@ -28,6 +28,24 @@ const userSchema = new mongoose.Schema({
             vehicleNo: {
                 type: String
             }
+        }
+    ],
+    bikes: [
+        {
+
+            brand: {
+                type: String
+            },
+            vehicleName: {
+                type: String
+            },
+            model: {
+                type: String
+            },
+            vehicleNo: {
+                type: String
+            }
+
         }
     ],
     bookings: [
@@ -44,9 +62,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "User"
     },
-    address:[
+    address: [
         {
-            type:String,
+            type: String,
         }
     ],
     token: {

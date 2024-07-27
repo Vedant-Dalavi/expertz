@@ -62,16 +62,26 @@ const workerSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
-    booking:[
+    booking: [
         {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Booking"
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Booking"
         }
     ],
+    baseLocation: {
+        lat: {
+            type: String,
+            // require:true
+        },
+        long: {
+            type: String,
+            // required:true
+        }
+    },
     token: {
         type: String,
     },
-   
+
 })
 
 module.exports = mongoose.model("Worker", workerSchema)

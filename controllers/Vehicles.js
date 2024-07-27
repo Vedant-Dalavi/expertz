@@ -44,11 +44,11 @@ exports.addCar = async (req, res) => {
             })
         }
 
-        newCar = { brand: brand, vehicleName: vehicleName, vehicleNo: vehicleNo, model: model };
+        newCar = { brand, vehicleName, vehicleNo, model };
         const user = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
-                    { vehicle: newCar }
+                    { cars: newCar }
             });
 
         return res.status(200).json({
@@ -72,7 +72,7 @@ exports.addCar = async (req, res) => {
 exports.addBike = async (req, res) => {
     try {
 
-        const { brand, bikeName, bikeNo, model } = req.body;
+        const { brand, vehicleName, vehicleNo, model } = req.body;
 
         const userId = req.user.id;
 
@@ -83,13 +83,24 @@ exports.addBike = async (req, res) => {
             })
         }
 
-        const newBike = { brand: brand, bikeName: bikeName, bikeNo: bikeNo, model: model };
-        const user = await User.findByIdAndUpdate({ _id: userId }, { $push: { bikes: newBike } });
+        if (!brand || !vehicleName || !model || !vehicleNo || !userId) {
+            return res.status(206).json({
+                success: false,
+                message: "Enter full car details"
+            })
+        }
 
+        newBike = { brand, vehicleName, vehicleNo, model };
+        const user = await User.findByIdAndUpdate({ _id: userId },
+            {
+                $push:
+                    { bikes: newBike }
+            });
 
         return res.status(200).json({
             success: true,
-            message: "Bike updated successfully"
+            message: "Bike updated successfully",
+            data: newBike
         })
 
 
