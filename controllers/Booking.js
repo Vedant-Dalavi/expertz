@@ -274,27 +274,27 @@ exports.confirmBooking = async (req, res) => {
     }
 }
 
-exports.completeBooking = async (req,res) =>{
-    try {
+// exports.completeBooking = async (req,res) =>{
+//     try {
 
-        const { bookingId } = req.body;
-        const workerId = req.worker.id;
+//         const { bookingId } = req.body;
+//         const workerId = req.worker.id;
 
-        if (!bookingId || !workerId) {
-            return res.status(404).json({
-                success: false,
-                message: "All field are Required"
-            })
-        }
+//         if (!bookingId || !workerId) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "All field are Required"
+//             })
+//         }
+
+
+
 
         
-
-
+//     } catch (error) {
         
-    } catch (error) {
-        
-    }
-}
+//     }
+// }
 
 
 
