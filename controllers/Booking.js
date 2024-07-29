@@ -2,6 +2,9 @@ const Booking = require("../models/Booking")
 const User = require("../models/User");
 const Worker = require("../models/worker");
 
+const otpGenerator = require("otp-generator");
+
+
 exports.newBooking = async (req, res) => {
     try {
 
@@ -237,7 +240,7 @@ exports.confirmBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).json({
                 success: false,
-                message: "Bookin not found"
+                message: "Booking not found"
             })
 
 
@@ -250,7 +253,14 @@ exports.confirmBooking = async (req, res) => {
             })
         }
 
+        var code = otpGenerator.generate(4, {
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+        });
+
         booking.status = "Confirmed";
+        booking.confirmCode = code;
         booking.acceptedBy = workerId
 
         await booking.save();

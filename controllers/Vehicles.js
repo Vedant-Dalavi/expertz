@@ -126,3 +126,33 @@ exports.addBike = async (req, res) => {
         })
     }
 }
+
+exports.getUserCar = async (req, res) => {
+    try {
+
+        const userId = req.user.id;
+
+        if (!userId) {
+            return res.json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        const user = await User.findById({ _id: userId });
+
+        const userCar = user.cars;
+
+        return res.status(200).json({
+            success: true,
+            message: "User cars fetched successfully",
+            data: userCar
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            messsage: `Error while fetching User Cars Error: ${error}`
+        })
+    }
+}

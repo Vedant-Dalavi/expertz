@@ -47,6 +47,10 @@ const bookingSchema = new mongoose.Schema({
     acceptedBy: {
         type: mongoose.Schema.Types.ObjectId,
     },
+    confirmCode: {
+        type: Number,
+        required: true
+    },
     status: {
         type: String,
         enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
