@@ -48,7 +48,7 @@ const bookingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
     },
     confirmCode: {
-        type: Number,
+        type: String,
         required: true
     },
     status: {

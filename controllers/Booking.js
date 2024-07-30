@@ -272,6 +272,7 @@ exports.confirmBooking = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Booking Confirmed",
+            booking,
         })
 
 
@@ -284,27 +285,55 @@ exports.confirmBooking = async (req, res) => {
     }
 }
 
-// exports.completeBooking = async (req,res) =>{
-//     try {
+exports.completeBooking = async (req, res) => {
+    try {
 
-//         const { bookingId } = req.body;
-//         const workerId = req.worker.id;
+        const { bookingId, confirmCode } = req.body;
+        const workerId = req.worker.id;
 
-//         if (!bookingId || !workerId) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "All field are Required"
-//             })
-//         }
+        if (!bookingId || !workerId || !confirmCode) {
+            return res.status(404).json({
+                success: false,
+                message: "All field are Required"
+            })
+        }
 
+        const booking = await Booking.findById({ _id: bookingId });
 
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found"
+            })
+        }
 
+        if (confirmCode === booking.confirmCode) {
 
-        
-//     } catch (error) {
-        
-//     }
-// }
+            booking.status = "Completed"
+            booking.save();
+
+            return res.status(200).json({
+                success: false,
+                message: "Booking Completed Successfully",
+            })
+        }
+        const  code = booking.confirmCode
+        return res.status(500).json({
+            success: false,
+            message: "Confirm Code do not match",
+            EnteredCode: confirmCode,
+            BookingCode:code,
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error in Completing Booking`
+        })
+
+    }
+}
 
 
 
