@@ -30,7 +30,6 @@ exports.newBooking = async (req, res) => {
             bookingSlot,
             alternateNumber,
             vehicleDetail,
-            status: "Pending"
         })
 
         const updateUser = await User.findByIdAndUpdate({ _id: userId }, {

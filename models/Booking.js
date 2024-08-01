@@ -49,7 +49,7 @@ const bookingSchema = new mongoose.Schema({
     },
     confirmCode: {
         type: String,
-        required: true
+        // required: true
     },
     status: {
         type: String,

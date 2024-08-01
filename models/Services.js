@@ -24,3 +24,5 @@ const serviceSchema = new mongoose.Schema({
   },
   images: [{ type: String }],
 });
+
+module.exports = mongoose.model("Service", serviceSchema);

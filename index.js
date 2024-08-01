@@ -16,8 +16,22 @@ const path = require("path");
 const multer = require('multer');
 const fs = require('fs');
 
+const { cloudinaryConnect } = require("./config/cloudinary");
+const fileUpload = require("express-fileupload");
+
 dotenv.config();
 const PORT = process.env.PORT || 4000;
+
+
+app.use(
+    fileUpload({
+        useTempFiles: true,
+        tempFileDir: "/tmp"
+    })
+)
+
+// cloudinary connect
+cloudinaryConnect();
 
 
 
