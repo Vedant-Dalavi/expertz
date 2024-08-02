@@ -19,7 +19,7 @@ const adminSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true,
+        // required: true,
     },
     accountType: {
         type: String,

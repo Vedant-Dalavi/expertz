@@ -30,17 +30,17 @@ const uploadFile = (filePath, resourceType) => {
 // Function to handle multiple file uploads
 exports.uploadMultipleFiles = async (files) => {
     console.log("step 2")
-    const uploadPromises = () => {
-        const fileType = files.mimetype.split("/")[0];
+    const uploadPromises = files.map((file) => {
+        const fileType = file.mimetype.split("/")[0];
         if (fileType !== "image" && fileType !== "video") {
             throw new Error("Unsupported file type");
         }
-        return uploadFile(files.path, fileType).then((result) => {
+        return uploadFile(file.path, fileType).then((result) => {
             console.log("Step 6")
-            removeFile(files.path); // Clean up the temporary file
+            removeFile(file.path); // Clean up the temporary file
             return result.secure_url;
         });
-    };
+    });
 
     return Promise.all(uploadPromises);
 };

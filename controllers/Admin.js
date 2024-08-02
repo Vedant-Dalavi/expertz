@@ -2,8 +2,7 @@ const User = require("../models/User");
 const Worker = require("../models/worker");
 const Booking = require("../models/Booking");
 const Service = require("../models/Services");
-const { uploadMultipleFiles } = require('../utils/UploadMultipleFile');
-
+const { uploadMultipleFiles } = require("../utils/UploadMultipleFile");
 
 exports.getAllUser = async (req, res) => {
     try {
@@ -75,40 +74,77 @@ exports.getAllBooking = async (req, res) => {
     }
 };
 
-exports.createNewService = async (req, res) => {
-    try {
-        const { serviceName, requiredTime, serviceInfo, includes, price } = req.body;
-        const images = req.files.images;
-        console.log("Step 1");
+// exports.createNewService = async (req, res) => {
+//     try {
+//         // console.log(req.files);
+//         console.log(req.body)
+//         const { serviceName, requiredTime, serviceInfo, includes, price } = req.body;
+//         // const images = req.files;
+//         // const images = null;
 
-        if (!serviceName || !requiredTime || !serviceInfo || !includes || !price || !images) {
-            return res.status(404).json({
-                success: false,
-                message: "All details are required",
-            });
-        }
+//         console.log("Step 1");
 
-        const imageUrls = await uploadMultipleFiles(images);
-        console.log("Step 8")
-        const service = await Service.create({
-            serviceName,
-            requiredTime,
-            serviceInfo,
-            includes,
-            price,
-            images: imageUrls // Store the URLs in the service
-        });
-        console.log("Step 9")
+//         if (!serviceName || !requiredTime || !serviceInfo || !includes || !price ) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: `All details are required`,
+//             });
+//         }
 
-        res.status(201).json({
-            success: true,
-            data: service
-        });
-    } catch (error) {
-        console.error("Error creating service: ", error);
-        res.status(500).json({
-            success: false,
-            message: "Internal server error"
-        });
-    }
-};
+//         // const imageUrls = await uploadMultipleFiles(images);
+//         console.log("Step 8");
+//         const service = await Service.create({
+//             serviceName,
+//             requiredTime,
+//             serviceInfo,
+//             includes,
+//             price,
+//             // images: imageUrls // Store the URLs in the service
+//         });
+//         console.log("Step 9");
+
+//         res.status(201).json({
+//             success: true,
+//             data: service
+//         });
+//     } catch (error) {
+//         console.error("Error creating service: ", error);
+//         res.status(500).json({
+//             success: false,
+//             message: `Error while creating new Service Error: ${error}`
+//         });
+//     }
+// };
+
+// exports.createNewService = async (req, res) => {
+//     try {
+//         console.log(req.body);
+
+//         const { serviceName, price, includes, serviceInfo, requiredTime } = req.body;
+
+//         if (!serviceName || !requiredTime || !serviceInfo || !includes || !price) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: `All details are required`,
+//             });
+//         }
+
+//         const newService = await Service.create({
+//             serviceName,
+//             price,
+//             includes,
+//             serviceInfo,
+//             requiredTime,
+//         });
+
+//         return res.status(200).json({
+//             success: true,
+//             message: 'Service added Successfully'
+//         })
+//     } catch (error) {
+//         return res.status(500).json({
+//             success: false,
+//             message: `error while creating new service Error:${error}`
+//         })
+//     }
+// };

@@ -7,7 +7,8 @@ const {
     VehiclesInfo,
     addCar,
     addBike,
-    getUserCar
+    getUserCar,
+    getUserBike
 } = require("../controllers/Vehicles")
 
 const {
@@ -32,6 +33,7 @@ router.get("/", VehiclesInfo);
 router.put("/add-car", auth, addCar);
 router.put("/add-bike", auth, addBike);
 router.get("/getusercar", auth, getUserCar);
+router.get("/getuserbike", auth, getUserBike);
 
 
 //  ******************************************************************************************************

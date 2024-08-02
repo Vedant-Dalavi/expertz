@@ -21,7 +21,7 @@ router.get("/getallworker", getAllWorker)
 // getAllBookings
 router.get("/getallbookings", getAllBooking)
 
-router.post('/create-newservice', upload.single('images'), createNewService);
+// router.post('/create-newservice', upload.array('images', 10), createNewService);
 
 
 

@@ -312,16 +312,16 @@ exports.completeBooking = async (req, res) => {
             booking.save();
 
             return res.status(200).json({
-                success: false,
+                success: true,
                 message: "Booking Completed Successfully",
             })
         }
-        const  code = booking.confirmCode
+        const code = booking.confirmCode
         return res.status(500).json({
             success: false,
             message: "Confirm Code do not match",
             EnteredCode: confirmCode,
-            BookingCode:code,
+            BookingCode: code,
         })
 
     } catch (error) {

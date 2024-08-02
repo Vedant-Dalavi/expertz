@@ -156,3 +156,33 @@ exports.getUserCar = async (req, res) => {
         })
     }
 }
+
+exports.getUserBike = async (req, res) => {
+    try {
+
+        const userId = req.user.id;
+
+        if (!userId) {
+            return res.json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        const user = await User.findById({ _id: userId });
+
+        const userBike = user.bikes;
+
+        return res.status(200).json({
+            success: true,
+            message: "User bike fetched successfully",
+            data: userBike
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            messsage: `Error while fetching User bike Error: ${error}`
+        })
+    }
+}
