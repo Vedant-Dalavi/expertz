@@ -1,82 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
 
-
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
-
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
+      name="viewport"
+    />
     <title>Otika - Admin Dashboard Template</title>
     <!-- General CSS Files -->
-    <link rel="stylesheet" href="/css/app.min.css">
-    <link rel="stylesheet" href="/bundles/datatables/datatables.min.css">
-    <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/css/app.min.css" />
+    <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
+    <link
+      rel="stylesheet"
+      href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"
+    />
     <!-- Template CSS -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/components.css" />
     <!-- Custom style CSS -->
-    <link rel="stylesheet" href="/css/custom.css">
-    <link rel='shortcut icon' type='image/x-icon' href='/img/favicon.ico' />
-</head>
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+  </head>
 
-<body>
+  <body>
     <div class="loader"></div>
     <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-            <%- include('../partial/navbar'); %>
-            <%- include('../partial/sidebar'); %>
-      
-                <!-- Main Content -->
-                <div class="main-content">
-                    <section class="section">
-                        <div class="section-body">
+      <div class="main-wrapper main-wrapper-1">
+        <%- include('../partial/navbar'); %> <%- include('../partial/sidebar');
+        %>
 
-
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>Table With State Save</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped table-hover" id="save-stage"
-                                                    style="width:100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>_id</th>
-                                                            <th>userName</th>
-                                                            <th>phoneNo</th>
-                                                            <th>email</th>
-                                                            <th>bookings</th>
-                                                            <th>registeredOn</th>
-                                                            <th>accountType</th>
-                                                            <th>address</th>
-
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+        <!-- Main Content -->
+        <div class="main-content">
+          <section class="section">
+            <div class="section-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4>Table With State Save</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table
+                          class="table table-striped table-hover"
+                          id="save-stage"
+                          style="width: 100%"
+                        >
+                          <thead>
+                            <tr>
+                              <th>_id</th>
+                              <th>userName</th>
+                              <th>phoneNo</th>
+                              <th>email</th>
+                              <th>bookings</th>
+                              <th>registeredOn</th>
+                              <th>accountType</th>
+                              <th>address</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <footer class="main-footer">
-                    <div class="footer-left">
-                        <a href="templateshub.net">Templateshub</a></a>
-                    </div>
-                    <div class="footer-right">
-                    </div>
-                </footer>
+              </div>
+            </div>
+          </section>
         </div>
+        <%- include('../partial/footer'); %> <%-
+        include('../partial/site-settings.ejs');%>
+      </div>
     </div>
     <!-- General JS Scripts -->
     <script src="/js/app.min.js"></script>
@@ -88,55 +84,52 @@
     <!-- <script src="/js/page/datatables.js"></script> -->
 
     <script>
-        $(document).ready(function () {
-            $('#save-stage').DataTable({
-                "scrollX": true,
-                stateSave: true,
-                ajax: {
-                    url: "/api/v1/admin/getalluser",
-                    type: "GET",
-                    dataSrc: 'users' // This maps the data source to the 'users' array in your JSON response
-                },
-                columns: [
-                    { data: '_id' },
-                    { data: 'userName' },
-                    { data: 'phoneNo' },
-                    { data: 'email' },
-                    {
-                        data: 'bookings',
-                        render: function (data, type, row) {
-                            // Format the bookings array into a readable string or count
-                            return data.length; // Or use a custom format
-                        }
-                    },
-                    {
-                        data: 'registeredOn',
-                        render: function (data) {
-                            // Format the date if needed
-                            return new Date(data).toLocaleDateString(); // Converts date to local date string
-                        }
-                    },
-                    { data: 'accountType' },
-                    {
-                        data: 'address',
-                        render: function (data) {
-                            // Format the address array into a readable string or count
-                            return data.length; // Or use a custom format
-                        }
-                    },
-
-                ]
-            });
+      $(document).ready(function () {
+        $("#save-stage").DataTable({
+          scrollX: true,
+          stateSave: true,
+          ajax: {
+            url: "/api/v1/admin/getalluser",
+            type: "GET",
+            dataSrc: "users", // This maps the data source to the 'users' array in your JSON response
+          },
+          columns: [
+            { data: "_id" },
+            { data: "userName" },
+            { data: "phoneNo" },
+            { data: "email" },
+            {
+              data: "bookings",
+              render: function (data, type, row) {
+                // Format the bookings array into a readable string or count
+                return data.length; // Or use a custom format
+              },
+            },
+            {
+              data: "registeredOn",
+              render: function (data) {
+                // Format the date if needed
+                return new Date(data).toLocaleDateString(); // Converts date to local date string
+              },
+            },
+            { data: "accountType" },
+            {
+              data: "address",
+              render: function (data) {
+                // Format the address array into a readable string or count
+                return data.length; // Or use a custom format
+              },
+            },
+          ],
         });
+      });
     </script>
 
     <!-- Template JS File -->
     <script src="/js/scripts.js"></script>
     <!-- Custom JS File -->
     <script src="/js/custom.js"></script>
-</body>
+  </body>
 
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
-
+  <!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
 </html>
