@@ -69,6 +69,13 @@ app.get('/', (req, res) => {
 app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
+
+
+app.get('*', (req, res) => {
+    res.render('errors-404', { title: 'Admin Panel' });
+});
+
+
 // Routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/vehicles", vehicleRoute);
