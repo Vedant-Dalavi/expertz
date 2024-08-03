@@ -56,14 +56,19 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 
 
 // // Set view engine
-// app.set("view engine", "ejs");
-// app.set("views", path.resolve("./views"));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views/pages/'));
 // home route
 
-app.get("/", async (req, res) => {
-    res.send("default Route");
-})
+app.use(express.static(path.join(__dirname, "views/assets")));
 
+app.get('/', (req, res) => {
+    res.render('index', { title: 'Admin Panel' });
+});
+
+app.get('/state', (req, res) => {
+    res.render('state', { title: 'Admin Panel' });
+});
 // Routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/vehicles", vehicleRoute);
