@@ -75,9 +75,8 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
-const allowedPages = ['company','model','bmodel','bikecompany','carplan','bikeplan','monthlyplan', 'state']; // list of allowed pages
+const allowedPages = ['company','model','bmodel','bikecompany','carplan','bikeplan','monthlyplan','allorders','pending','confirm','complete', 'state']; // list of allowed pages
 
-<<<<<<< HEAD
 app.get('/:page', (req, res) => {
     const page = req.params.page;
     if (allowedPages.includes(page)) {
@@ -86,11 +85,9 @@ app.get('/:page', (req, res) => {
         res.render('errors-404')
     }
 });
-=======
 // app.get('*', (req, res) => {
 //     res.render('errors-404', { title: 'Admin Panel' });
 // });
->>>>>>> a1a2ca24adf27a2865b5b33e3ac20fcffcf43fc7
 
 
 // Routes
