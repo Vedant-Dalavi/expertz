@@ -80,7 +80,6 @@ app.get('*', (req, res) => {
     res.render('errors-404', { title: 'Admin Panel' });
 });
 
->>>>>>> 3babe20c70cebbb30a01f9c9b1d72b251f3c03e4
 
 // Routes
 app.use("/api/v1/auth", userRoutes);
