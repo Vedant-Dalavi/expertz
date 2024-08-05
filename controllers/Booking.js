@@ -62,7 +62,7 @@ exports.getUserBooking = async (req, res) => {
 
     try {
 
-        const { userId } = req.body;
+        const userId = req.user.id;
 
         if (!userId) {
             return res.status(500).json({
@@ -71,7 +71,9 @@ exports.getUserBooking = async (req, res) => {
             })
         }
 
-        const getBooking = await Booking.find({ userId });
+        // const getBooking = await Booking.find({ bookedBy:userId });
+        const user = await User.findById({ _id: userId }).populate("bookings");
+        const getBooking = user.bookings;
 
         if (!getBooking) {
             return res.status(500), json({

@@ -96,3 +96,37 @@ exports.getUserCar = async (req, res) => {
 
 //     }
 // }
+
+exports.getUserBooking = async (req, res) => {
+
+    try {
+
+        const userId = req.user.id;
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "userId not found"
+            })
+        }
+
+        const user = await User.findById({ _id: userId }).populate("bookings");
+
+        const userBooking = user.bookings;
+
+        return res.status(200).json({
+            success: true,
+            message: "User booking fetched successfully",
+            data: userBooking
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching user Booking. Error: ${error}`
+        })
+
+    }
+
+}
