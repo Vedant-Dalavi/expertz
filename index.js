@@ -60,11 +60,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views/pages/'));
 // home route
 
-app.use(express.static(path.join(__dirname, 'otika-bootstrap-admin-template/assets')));
-
-app.get("/", async (req, res) => {
-    res.send("default Route");
-})
 app.use(express.static(path.join(__dirname, "views/assets")));
 
 app.get('/', (req, res) => {
@@ -75,7 +70,7 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
-const allowedPages = ['company','model','bmodel','bikecompany','carplan','bikeplan','monthlyplan','allorders','pending','confirm','complete', 'state']; // list of allowed pages
+const allowedPages = ['company','model','bmodel','bikebrand','carplan','bikeplan','monthlyplan','worker','report', 'state']; // list of allowed pages
 
 app.get('/:page', (req, res) => {
     const page = req.params.page;
@@ -85,9 +80,6 @@ app.get('/:page', (req, res) => {
         res.render('errors-404')
     }
 });
-// app.get('*', (req, res) => {
-//     res.render('errors-404', { title: 'Admin Panel' });
-// });
 
 
 // Routes
