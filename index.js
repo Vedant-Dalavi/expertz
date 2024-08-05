@@ -60,6 +60,8 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 // app.set("views", path.resolve("./views"));
 // home route
 
+app.use(express.static(path.join(__dirname, 'otika-bootstrap-admin-template/assets')));
+
 app.get("/", async (req, res) => {
     res.send("default Route");
 })

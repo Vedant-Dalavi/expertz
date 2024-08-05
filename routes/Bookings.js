@@ -29,6 +29,9 @@ router.get("/user-booking", auth, getUserBooking);
 router.put("/update-booking", auth, updateBooking);
 router.delete("/delete-booking", auth, cancelBooking);
 
+router.get("/getuserbooking",auth, getUserBooking);
+
+
 
 // *****************************************************************************************************
 //                                 Booking Confirm 
