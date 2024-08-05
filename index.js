@@ -76,9 +76,9 @@ app.get('/state', (req, res) => {
 });
 
 
-app.get('*', (req, res) => {
-    res.render('errors-404', { title: 'Admin Panel' });
-});
+// app.get('*', (req, res) => {
+//     res.render('errors-404', { title: 'Admin Panel' });
+// });
 
 
 // Routes
