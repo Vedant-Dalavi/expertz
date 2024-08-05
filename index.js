@@ -70,9 +70,15 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
+const allowedPages = ['company','model','bmodel','bikecompany','carplan','bikeplan','monthlyplan', 'state']; // list of allowed pages
 
-app.get('*', (req, res) => {
-    res.render('errors-404', { title: 'Admin Panel' });
+app.get('/:page', (req, res) => {
+    const page = req.params.page;
+    if (allowedPages.includes(page)) {
+        res.render(page,{ title: 'Admin Panel' });
+    } else {
+        res.render('errors-404')
+    }
 });
 
 
