@@ -1,30 +1,34 @@
-const Vehicles = require('../models/Vehicle');
+const Brand = require('../models/Vehicle');
 const User = require("../models/User")
 const jwt = require("jsonwebtoken");
 
-// ALL Vehicle Info
-exports.VehiclesInfo = async (req, res) => {
-    try {
-        const vehicleData = await Vehicles.find();
+// 
 
-        if (!vehicleData || vehicleData.length === 0) {
+// ALL Vehicle Info
+exports.BrandInfo = async (req, res) => {
+    try {
+        const brandData = await Brand.find().populate([
+            { path: "cars", select: "carName" },
+            { path: "bikes", select: "bikeName" }
+        ]);
+
+        if (!brandData || brandData.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "No Vehicles Found"
+                message: "No Brand Found",
             });
         }
 
-
         return res.status(200).json({
             success: true,
-            message: "Vehicles data fetched successfully",
-            data: vehicleData
+            message: "Brand data fetched successfully",
+            data: brandData,
         });
     } catch (error) {
-        console.log("Error while fetching vehicleData: " + error);
+        console.log("Error while fetching brandData: " + error);
         return res.status(500).json({
             success: false,
-            message: "Error while fetching vehicle data",
+            message: `Error while fetching vehicle data Error: ${error}`,
         });
     }
 };
@@ -33,11 +37,11 @@ exports.VehiclesInfo = async (req, res) => {
 exports.addCar = async (req, res) => {
     try {
 
-        const { brand, vehicleName, vehicleNo, model } = req.body;
+        const { brand, carName, carNo, model } = req.body;
 
         const userId = req.user.id;
 
-        if (!brand || !vehicleName || !model || !vehicleNo || !userId) {
+        if (!brand || !carName || !model || !carNo || !userId) {
             return res.status(206).json({
                 success: false,
                 message: "Enter full car details"
@@ -54,7 +58,7 @@ exports.addCar = async (req, res) => {
         }
 
 
-        newCar = { brand, vehicleName, vehicleNo, model };
+        newCar = { brand, carName, carNo, model };
         const userUpdate = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
@@ -79,15 +83,14 @@ exports.addCar = async (req, res) => {
     }
 }
 
-
 exports.addBike = async (req, res) => {
     try {
 
-        const { brand, vehicleName, vehicleNo, model } = req.body;
+        const { brand, carData, carNo, model } = req.body;
 
         const userId = req.user.id;
 
-        if (!brand || !vehicleName || !vehicleNo || !model || !userId) {
+        if (!brand || !carData || !carNo || !model || !userId) {
             return res.send(206).json({
                 success: false,
                 message: "Enter full car details"
@@ -104,7 +107,7 @@ exports.addBike = async (req, res) => {
         }
 
 
-        newBike = { brand, vehicleName, vehicleNo, model };
+        newBike = { brand, carData, carNo, model };
         const userUpdate = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
