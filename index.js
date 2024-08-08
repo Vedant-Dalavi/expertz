@@ -70,7 +70,7 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
-const allowedPages = ['company','model','bmodel','bikebrand','carplan','bikeplan','monthlyplan','worker','report', 'state']; // list of allowed pages
+const allowedPages = ['company','brand','model','bmodel','bikebrand','carplan','bikeplan','allorders','pending','confirm','complete','monthlyplan','worker','report', 'state']; // list of allowed pages
 
 app.get('/:page', (req, res) => {
     const page = req.params.page;

@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
-
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title><%=title%></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -19,12 +15,12 @@
   <link rel="stylesheet" href="/css/custom.css" />
   <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
 </head>
-
 <body>
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
+      <%- include('../partial/navbar'); %>
+      <%- include('../partial/sidebar'); %>
 
       <!-- Main Content -->
       <div class="main-content">
@@ -34,10 +30,10 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Add Brand and Model Name</h4>
+                    <h4>Add Car</h4>
                   </div>
                   <div class="card-body">
-                    <form id="bike-form">
+                    <form id="car-form">
                       <div class="form-group">
                         <label for="brandDropdown">Brand Name</label>
                         <select id="brandDropdown" class="form-control" required>
@@ -45,8 +41,8 @@
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="bikeName">Bike Name</label>
-                        <input type="text" id="bikeName" class="form-control" placeholder="Enter Bike name" required>
+                        <label for="carName">Car Name</label>
+                        <input type="text" id="carName" class="form-control" placeholder="Enter Car name" required>
                       </div>
                       <div class="form-group">
                         <label for="modelName">Model Name</label>
@@ -67,7 +63,7 @@
                         <thead>
                           <tr>
                             <th>Brand</th>
-                            <th>Bike Name</th>
+                            <th>Car Name</th>
                             <th>Model Name</th>
                             <th>Action</th>
                           </tr>
@@ -82,16 +78,18 @@
           </div>
         </section>
       </div>
-      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+      <%- include('../partial/footer'); %>
+      <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
+  
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
   <!-- JS Libraries -->
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
-
+  
   <script>
     var table = $("#save-state").DataTable({
       scrollX: true,
@@ -102,11 +100,11 @@
         dataSrc: function (json) {
           var data = [];
           json.data.forEach(function (brand) {
-            brand.bikes.forEach(function (bike) { // Change to use bikes
+            brand.cars.forEach(function (car) {
               data.push({
                 brand: brand.brand,
-                bikeName: bike.bikeName, // Use bikeName instead of carName
-                modelName: bike.modelName || ''
+                carName: car.carName,
+                modelName: car.modelName || ''
               });
             });
           });
@@ -115,7 +113,7 @@
       },
       columns: [
         { data: "brand" },
-        { data: "bikeName" }, // Change to bikeName
+        { data: "carName" },
         { data: "modelName" },
         {
           data: null,
@@ -134,30 +132,52 @@
       }
     });
 
-    document.getElementById('bike-form').addEventListener('submit', function (e) {
+    document.getElementById('car-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var brandName = document.getElementById('brandDropdown').value;
-      var bikeName = document.getElementById('bikeName').value;
+      var carName = document.getElementById('carName').value;
       var modelName = document.getElementById('modelName').value;
-      var newRow = table.row.add({
-        brand: brandName,
-        bikeName: bikeName,
-        modelName: modelName
-      }).draw().node();
-      $(newRow).attr('data-brand-name', brandName); // Custom attribute to store the brand name
-      $(newRow).attr('data-bike-name', bikeName); // Custom attribute to store the bike name
-      $(newRow).attr('data-model-name', modelName); // Custom attribute to store the model name
-      document.getElementById('bike-form').reset(); // Reset the form
+
+      // AJAX POST request to add the car to the API
+      $.ajax({
+        url: "https://expterzbackend.onrender.com/api/v1/admin/add-newbrand",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ brand: brandName }),
+        success: function (response) {
+          alert('Brand added successfully!');
+          
+          // Check if the brand is already in the dropdown
+          if ($("#brandDropdown option[value='" + brandName + "']").length == 0) {
+            $('#brandDropdown').append(`<option value="${brandName}">${brandName}</option>`);
+          }
+          
+          // Add the new car to the DataTable
+          var newRow = table.row.add({
+            brand: brandName,
+            carName: carName,
+            modelName: modelName
+          }).draw().node();
+          
+          $(newRow).attr('data-brand-name', brandName); // Custom attribute to store the brand name
+          $(newRow).attr('data-car-name', carName); // Custom attribute to store the car name
+          $(newRow).attr('data-model-name', modelName); // Custom attribute to store the model name
+          document.getElementById('car-form').reset(); // Reset the form
+        },
+        error: function (xhr, status, error) {
+          alert('Error adding brand: ' + error);
+        }
+      });
     });
 
     $('#save-state tbody').on('click', 'button.edit-button', function () {
       var data = table.row($(this).parents('tr')).data();
       var newBrandName = prompt("Edit Brand Name:", data.brand);
-      var newBikeName = prompt("Edit Bike Name:", data.bikeName);
+      var newCarName = prompt("Edit Car Name:", data.carName);
       var newModelName = prompt("Edit Model Name:", data.modelName);
-      if (newBrandName != null && newBikeName != null && newModelName != null) {
+      if (newBrandName != null && newCarName != null && newModelName != null) {
         data.brand = newBrandName;
-        data.bikeName = newBikeName;
+        data.carName = newCarName;
         data.modelName = newModelName;
         table.row($(this).parents('tr')).data(data).draw();
       }
@@ -165,9 +185,29 @@
 
     $('#save-state tbody').on('click', 'button.delete-button', function () {
       var data = table.row($(this).parents('tr')).data();
-      if (confirm(`Are you sure you want to delete brand: ${data.brand}, bike: ${data.bikeName}, and model: ${data.modelName}?`)) {
+      if (confirm(`Are you sure you want to delete brand: ${data.brand}, car: ${data.carName}, and model: ${data.modelName}?`)) {
         table.row($(this).parents('tr')).remove().draw();
       }
+    });
+
+    // Load the brand dropdown when the page is ready
+    $(document).ready(function() {
+      $.ajax({
+        url: "https://expterzbackend.onrender.com/api/v1/vehicles",
+        type: "GET",
+        success: function(response) {
+          var brands = [];
+          response.data.forEach(function(brand) {
+            if (brands.indexOf(brand.brand) === -1) {
+              brands.push(brand.brand);
+              $('#brandDropdown').append(`<option value="${brand.brand}">${brand.brand}</option>`);
+            }
+          });
+        },
+        error: function(xhr, status, error) {
+          console.error('Error fetching brands: ' + error);
+        }
+      });
     });
   </script>
 
@@ -176,7 +216,4 @@
   <!-- Custom JS File -->
   <script src="/js/custom.js"></script>
 </body>
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
-
 </html>

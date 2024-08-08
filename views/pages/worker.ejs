@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
 
 <head>
   <meta charset="UTF-8" />
@@ -26,278 +25,46 @@
     <div class="main-wrapper main-wrapper-1">
       <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
 
-          <!-- Main Content -->
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-striped" id="table-1">
-                <thead>
-                  <tr>
-                    <th class="text-center">
-                      #
-                    </th>
-                    <th>Task Name</th>
-                    <th>Progress</th>
-                    <th>Members</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      1
-                    </td>
-                    <td>Create a mobile app</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-40">
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                    </td>
-                    <td>2018-01-20</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      2
-                    </td>
-                    <td>Redesign homepage</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar width-per-60"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-3.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                    </td>
-                    <td>2018-04-10</td>
-                    <td>
-                      <div class="badge badge-info badge-shadow">Todo</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      3
-                    </td>
-                    <td>Backup database</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-warning width-per-70"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                    </td>
-                    <td>2018-01-29</td>
-                    <td>
-                      <div class="badge badge-warning badge-shadow">In Progress</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      4
-                    </td>
-                    <td>Input data</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-90"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                    </td>
-                    <td>2018-01-16</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      5
-                    </td>
-                    <td>Create a mobile app</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-40">
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                    </td>
-                    <td>2018-01-20</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      6
-                    </td>
-                    <td>Redesign homepage</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar width-per-60"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-3.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                    </td>
-                    <td>2018-04-10</td>
-                    <td>
-                      <div class="badge badge-info badge-shadow">Todo</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      7
-                    </td>
-                    <td>Backup database</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-warning width-per-70"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                    </td>
-                    <td>2018-01-29</td>
-                    <td>
-                      <div class="badge badge-warning badge-shadow">In Progress</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      8
-                    </td>
-                    <td>Input data</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-90"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                    </td>
-                    <td>2018-01-16</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      9
-                    </td>
-                    <td>Create a mobile app</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-40">
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                    </td>
-                    <td>2018-01-20</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      10
-                    </td>
-                    <td>Redesign homepage</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar width-per-60"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-3.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                    </td>
-                    <td>2018-04-10</td>
-                    <td>
-                      <div class="badge badge-info badge-shadow">Todo</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      11
-                    </td>
-                    <td>Backup database</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-warning width-per-70"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                    </td>
-                    <td>2018-01-29</td>
-                    <td>
-                      <div class="badge badge-warning badge-shadow">In Progress</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      12
-                    </td>
-                    <td>Input data</td>
-                    <td class="align-middle">
-                      <div class="progress progress-xs">
-                        <div class="progress-bar bg-success width-per-90"></div>
-                      </div>
-                    </td>
-                    <td>
-                      <img alt="image" src="assets/img/users/user-2.png" width="35">
-                      <img alt="image" src="assets/img/users/user-5.png" width="35">
-                      <img alt="image" src="assets/img/users/user-4.png" width="35">
-                      <img alt="image" src="assets/img/users/user-1.png" width="35">
-                    </td>
-                    <td>2018-01-16</td>
-                    <td>
-                      <div class="badge badge-success badge-shadow">Completed</div>
-                    </td>
-                    <td><a href="#" class="btn btn-primary">Detail</a></td>
-                  </tr>
-                </tbody>
-              </table>
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Worker Table</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="username">Username</label>
+                      <input type="text" id="username" class="form-control" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                      <label for="workername">Worker Name</label>
+                      <input type="text" id="workername" class="form-control" placeholder="Enter worker name">
+                    </div>
+                    <button id="add-worker-btn" class="btn btn-primary">Add Worker</button>
+                    <div class="table-responsive mt-4">
+                      <table class="table table-striped table-hover" id="worker-table" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Username</th>
+                            <th>Worker Name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
     </div>
   </div>
   <!-- General JS Scripts -->
@@ -306,24 +73,56 @@
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Page Specific JS File -->
-  <!-- <script src="/js/page/datatables.js"></script> -->
 
   <script>
-    $("#save-state").DataTable({
+    var table = $("#worker-table").DataTable({
       scrollX: true,
       stateSave: true,
       ajax: {
-        url: "/api/v1/admin/getalluser",
+        url: "/api/v1/admin/getalluser", // Replace with your API endpoint
         type: "GET",
         dataSrc: "users",
       },
       columns: [
-        { data: "_id" },
         { data: "userName" },
-        { data: "phoneNo" },
-        { data: "email" },
+        { data: "workerName" },
+        {
+          data: null,
+          className: "center",
+          defaultContent: '<button class="btn btn-danger btn-sm delete-button">Delete</button>'
+        }
       ]
+    });
+
+    $('#worker-table tbody').on('click', 'button.delete-button', function () {
+      var data = table.row($(this).parents('tr')).data();
+      // Add your delete logic here, for example an AJAX call to delete the worker
+      if (confirm(`Are you sure you want to delete worker: ${data.workerName}?`)) {
+        // Perform delete operation (e.g., AJAX call)
+        // On success:
+        table.row($(this).parents('tr')).remove().draw();
+      }
+    });
+
+    // Add worker functionality
+    $("#add-worker-btn").click(function () {
+      var username = $("#username").val();
+      var workername = $("#workername").val();
+      if (username && workername) {
+        // Add your AJAX call here to add the worker to the backend
+        // On success, add the worker to the table
+        table.row.add({
+          userName: username,
+          workerName: workername,
+          action: null
+        }).draw(false);
+
+        // Clear the input fields
+        $("#username").val('');
+        $("#workername").val('');
+      } else {
+        alert("Please fill out both fields.");
+      }
     });
   </script>
 
@@ -331,19 +130,6 @@
   <script src="/js/scripts.js"></script>
   <!-- Custom JS File -->
   <script src="/js/custom.js"></script>
-  <script src="assets/js/app.min.js"></script>
-  <!-- JS Libraies -->
-  <script src="assets/bundles/datatables/datatables.min.js"></script>
-  <script src="assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
-  <script src="assets/bundles/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Page Specific JS File -->
-  <script src="assets/js/page/datatables.js"></script>
-  <!-- Template JS File -->
-  <script src="assets/js/scripts.js"></script>
-  <!-- Custom JS File -->
-  <script src="assets/js/custom.js"></script>
 </body>
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
 
 </html>
