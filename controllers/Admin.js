@@ -252,7 +252,7 @@ exports.getAllBrand = async (req, res) => {
 
     try {
 
-        const brand = await Brand.populate([
+        const brand = await Brand.find().populate([
             { path: "cars", select: "carName models" },
             { path: "bikes", select: "bikeName models" }
         ]);
