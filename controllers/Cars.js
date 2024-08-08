@@ -32,7 +32,6 @@ exports.CarsInfo = async (req, res) => {
 
     }
 
-
 };
 
 exports.addCar = async (req, res) => {

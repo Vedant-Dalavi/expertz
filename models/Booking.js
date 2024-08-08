@@ -42,6 +42,9 @@ const bookingSchema = new mongoose.Schema({
         },
         model: {
             type: String
+        },
+        vihicleNo: {
+            type: String
         }
     },
     acceptedBy: {
@@ -50,6 +53,10 @@ const bookingSchema = new mongoose.Schema({
     confirmCode: {
         type: String,
         // required: true
+    },
+    price: {
+        type: String,
+        required: true,
     },
     status: {
         type: String,

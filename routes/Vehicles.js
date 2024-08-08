@@ -8,7 +8,8 @@ const {
     addCar,
     addBike,
     getUserCar,
-    getUserBike
+    getUserBike,
+    BrandInfo
 } = require("../controllers/Vehicles")
 
 const {
@@ -26,7 +27,7 @@ const { auth } = require("../middleware/auth")
 // ********************************************************************************************************
 
 // get all cars
-router.get("/", VehiclesInfo);
+router.get("/", BrandInfo);
 
 
 // insert a car/bike in user's cars/bike

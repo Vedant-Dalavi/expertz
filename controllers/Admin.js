@@ -3,6 +3,9 @@ const Worker = require("../models/worker");
 const Booking = require("../models/Booking");
 const Service = require("../models/Services");
 const { uploadMultipleFiles } = require("../utils/UploadMultipleFile");
+const Brand = require("../models/Vehicle");
+const Cars = require("../models/Cars");
+const Bikes = require("../models/Bikes");
 
 exports.getAllUser = async (req, res) => {
     try {
@@ -74,77 +77,207 @@ exports.getAllBooking = async (req, res) => {
     }
 };
 
-// exports.createNewService = async (req, res) => {
-//     try {
-//         // console.log(req.files);
-//         console.log(req.body)
-//         const { serviceName, requiredTime, serviceInfo, includes, price } = req.body;
-//         // const images = req.files;
-//         // const images = null;
 
-//         console.log("Step 1");
 
-//         if (!serviceName || !requiredTime || !serviceInfo || !includes || !price ) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: `All details are required`,
-//             });
-//         }
+exports.addVehicleBrand = async (req, res) => {
+    try {
 
-//         // const imageUrls = await uploadMultipleFiles(images);
-//         console.log("Step 8");
-//         const service = await Service.create({
-//             serviceName,
-//             requiredTime,
-//             serviceInfo,
-//             includes,
-//             price,
-//             // images: imageUrls // Store the URLs in the service
-//         });
-//         console.log("Step 9");
+        const { brand } = req.body;
 
-//         res.status(201).json({
-//             success: true,
-//             data: service
-//         });
-//     } catch (error) {
-//         console.error("Error creating service: ", error);
-//         res.status(500).json({
-//             success: false,
-//             message: `Error while creating new Service Error: ${error}`
-//         });
-//     }
-// };
+        if (!brand) {
+            return res.status(404).json({
+                success: false,
+                message: "brand Not found"
+            })
+        }
 
-// exports.createNewService = async (req, res) => {
-//     try {
-//         console.log(req.body);
+        const checkBrand = await Brand.findOne({ brand });
 
-//         const { serviceName, price, includes, serviceInfo, requiredTime } = req.body;
+        if (checkBrand) {
+            return res.status(500).json({
+                success: false,
+                message: `brand already exits : brand:${checkBrand}`
+            })
+        }
 
-//         if (!serviceName || !requiredTime || !serviceInfo || !includes || !price) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: `All details are required`,
-//             });
-//         }
+        const newBrand = await Brand.create({
+            brand
+        })
 
-//         const newService = await Service.create({
-//             serviceName,
-//             price,
-//             includes,
-//             serviceInfo,
-//             requiredTime,
-//         });
+        return res.status(200).json({
+            success: false,
+            message: "New brand added Successfully",
+            newBrand
+        })
 
-//         return res.status(200).json({
-//             success: true,
-//             message: 'Service added Successfully'
-//         })
-//     } catch (error) {
-//         return res.status(500).json({
-//             success: false,
-//             message: `error while creating new service Error:${error}`
-//         })
-//     }
-// };
+
+    } catch (error) {
+
+        return res.status(200).json({
+            success: false,
+            message: `Error while adding brand. Error : ${error}`,
+        })
+
+    }
+}
+
+exports.addBrandCar = async (req, res) => {
+    try {
+
+        const { brandId, carName, models } = req.body;
+
+        if (!brandId || !carName || !models) {
+            return res.status(404).json({
+                success: false,
+                message: "All fields are required"
+            })
+        }
+
+        const isBrand = await Brand.findById({ _id: brandId }).populate("brand");
+
+        if (!isBrand) {
+            return res.status(404).json({
+                success: false,
+                message: "brand not found"
+            })
+        }
+
+        const isCar = await Cars.findOne({ carName });
+
+        if (isCar) {
+            return res.status(500).json({
+                success: false,
+                message: "Car with same name already exits"
+            })
+        }
+
+        const newCar = await Cars.create({
+            brand: isBrand.brand,
+            carName,
+            models
+        })
+
+        const updateBrandCar = await Brand.findByIdAndUpdate({ _id: brandId }, {
+            $push: {
+                cars: newCar._id,
+            }
+        })
+
+        isBrand.save();
+
+
+
+        return res.status(200).json({
+            success: true,
+            message: "New car added successfully"
+        })
+
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: true,
+            message: `Error while adding new car in  admin. Error: ${error}`
+        })
+
+
+
+    }
+}
+
+exports.addBrandBike = async (req, res) => {
+    try {
+
+        const { brandId, bikeName, models } = req.body;
+
+        if (!brandId || !bikeName || !models) {
+            return res.status(404).json({
+                success: false,
+                message: "All fields are required"
+            })
+        }
+
+        const isBrand = await Brand.findById({ _id: brandId }).populate("brand");
+
+        if (!isBrand) {
+            return res.status(404).json({
+                success: false,
+                message: "brand not found"
+            })
+        }
+
+        const isBike = await Bikes.findOne({ bikeName });
+
+        if (isBike) {
+            return res.status(500).json({
+                success: false,
+                message: "Car with same name already exits"
+            })
+        }
+
+        const newBike = await Bikes.create({
+            brand: isBrand.brand,
+            bikeName,
+            models
+        })
+
+        const updateBrandCar = await Brand.findByIdAndUpdate({ _id: brandId }, {
+            $push: {
+                bikes: newBike._id,
+            }
+        })
+        isBrand.save();
+
+
+
+        return res.status(200).json({
+            success: true,
+            message: "New car added successfully"
+        })
+
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success: true,
+            message: `Error while adding new car in  admin. Error: ${error}`
+        })
+
+
+
+    }
+}
+
+exports.getAllBrand = async (req, res) => {
+
+    try {
+
+        const brand = await Brand.find().populate([
+            { path: "cars", select: "carName models" },
+            { path: "bikes", select: "bikeName models" }
+        ]);
+
+        if (!brand) {
+            return res.status(404).json({
+                success: false,
+                message: "No Brand Found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "All Brand fetched Successfully",
+            data: brand
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching all brands. Error : ${error}`
+        })
+
+    }
+
+}
+

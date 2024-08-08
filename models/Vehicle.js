@@ -8,37 +8,21 @@ const vehicleSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    cars: [{
-        carName: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        models: [
-            {
-                type: String,
-            }
-        ]
-    }
+    cars: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Cars"
+        }
+
     ],
     bikes: [
         {
-            bikeName: {
-                type: String,
-                required: true,
-                trim: true,
-            },
-            models: [
-                {
-                    model: {
-                        type: String,
-                        required: true,
-                    }
-                }
-            ]
-
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Bikes"
         }
+
+
     ],
 })
 
-module.exports = mongoose.model("Vehicles", vehicleSchema)
+module.exports = mongoose.model("Brand", vehicleSchema)
