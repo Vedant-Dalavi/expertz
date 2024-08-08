@@ -8,8 +8,8 @@ const jwt = require("jsonwebtoken");
 exports.BrandInfo = async (req, res) => {
     try {
         const brandData = await Brand.find().populate([
-            { path: "cars", select: "carName" },
-            { path: "bikes", select: "bikeName" }
+            { path: "cars", select: "carName models" },
+            { path: "bikes", select: "bikeName models" }
         ]);
 
         if (!brandData || brandData.length === 0) {

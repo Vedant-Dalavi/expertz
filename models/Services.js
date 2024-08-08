@@ -5,7 +5,13 @@
 //     type: String,
 //     required: true,
 //   },
-//   plan
+//   desc:{
+//     type:String,
+//     required:true
+//   },
+//   TnC:{
+
+//   }
 // });
 
 // module.exports = mongoose.model("Service", serviceSchema);

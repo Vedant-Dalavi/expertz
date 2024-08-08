@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { adminSignup, adminLogin } = require("../controllers/Auth");
-const { getAllUser, getAllWorker, getAllBooking, createNewService, addVehicleBrand, addBrandCar, addBrandBike } = require("../controllers/Admin");
+const { getAllUser, getAllWorker, getAllBooking, createNewService, addVehicleBrand, addBrandCar, addBrandBike, getAllBrand } = require("../controllers/Admin");
 const upload = require('../middleware/fileUpload');
 const { isAdmin } = require("../middleware/auth")
 
@@ -33,6 +33,8 @@ router.get("/getallbookings", getAllBooking)
 
 // router.post("/add-newbrand", isAdmin, addVichicleBrand);
 router.post("/add-newbrand", addVehicleBrand);
+router.get("/getallbrand", getAllBrand);
+
 
 router.get("/getallvehicle", BrandInfo);
 router.get("/add-brandcar", addBrandCar);

@@ -248,3 +248,36 @@ exports.addBrandBike = async (req, res) => {
     }
 }
 
+exports.getAllBrand = async (req, res) => {
+
+    try {
+
+        const brand = await Brand.populate([
+            { path: "cars", select: "carName models" },
+            { path: "bikes", select: "bikeName models" }
+        ]);
+
+        if (!brand) {
+            return res.status(404).json({
+                success: false,
+                message: "No Brand Found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "All Brand fetched Successfully",
+            data: brand
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching all brands. Error : ${error}`
+        })
+
+    }
+
+}
+
