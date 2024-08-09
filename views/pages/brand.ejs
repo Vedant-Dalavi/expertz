@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
+  <title><%=title%></title>
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="/css/app.min.css" />
+  <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
+  <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <!-- Custom style CSS -->
+  <link rel="stylesheet" href="/css/custom.css" />
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+</head>
+<body>
+  <div class="loader"></div>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <%- include('../partial/navbar'); %>
+      <%- include('../partial/sidebar'); %>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Add Car</h4>
+                  </div>
+                  <div class="card-body">
+                    <form id="car-form">
+                      <div class="form-group">
+                        <label for="brandDropdown">Brand Name</label>
+                        <select id="brandDropdown" class="form-control" required>
+                          <option value="" disabled selected>Select a brand</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="carName">Car Name</label>
+                        <input type="text" id="carName" class="form-control" placeholder="Enter Car name" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="modelName">Model Name</label>
+                        <input type="text" id="modelName" class="form-control" placeholder="Enter Model name" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Table With State Save</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Brand</th>
+                            <th>Car Name</th>
+                            <th>Model Name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %>
+      <%- include('../partial/site-settings.ejs'); %>
+    </div>
+  </div>
+  
+  <!-- General JS Scripts -->
+  <script src="/js/app.min.js"></script>
+  <!-- JS Libraries -->
+  <script src="/bundles/datatables/datatables.min.js"></script>
+  <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Initialize the DataTable
+      var table = $("#save-state").DataTable({
+        scrollX: true,
+        stateSave: true,
+        ajax: {
+          url: "https://expterzbackend.onrender.com/api/v1/vehicles",
+          type: "GET",
+          dataSrc: function (json) {
+            var data = [];
+            json.data.forEach(function (brand) {
+              brand.cars.forEach(function (car) {
+                data.push({
+                  brand: brand.brand,
+                  carName: car.carName,
+                  modelName: car.modelName || ''
+                });
+              });
+            });
+            return data;
+          }
+        },
+        columns: [
+          { data: "brand" },
+          { data: "carName" },
+          { data: "modelName" },
+          {
+            data: null,
+            className: "center",
+            defaultContent: '<button class="btn btn-warning btn-sm edit-button">Edit</button> <button class="btn btn-danger btn-sm delete-button">Delete</button>'
+          }
+        ],
+        initComplete: function() {
+          populateBrandDropdown();
+        }
+      });
+
+      // Populate the brand dropdown
+      function populateBrandDropdown() {
+        $.ajax({
+          url: "https://expterzbackend.onrender.com/api/v1/vehicles",
+          type: "GET",
+          success: function(response) {
+            var brands = [];
+            response.data.forEach(function(brand) {
+              if (brands.indexOf(brand.brand) === -1) {
+                brands.push(brand.brand);
+                $('#brandDropdown').append(`<option value="${brand.brand}">${brand.brand}</option>`);
+              }
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error('Error fetching brands: ' + error);
+          }
+        });
+      }
+
+      // Handle form submission
+      document.getElementById('car-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var brandName = document.getElementById('brandDropdown').value;
+        var carName = document.getElementById('carName').value;
+        var modelName = document.getElementById('modelName').value;
+
+        // Add the car to the table
+        var newRow = table.row.add({
+          brand: brandName,
+          carName: carName,
+          modelName: modelName
+        }).draw().node();
+
+        // Clear the form
+        document.getElementById('car-form').reset();
+      });
+
+      // Handle edit button click
+      $('#save-state tbody').on('click', 'button.edit-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var newBrandName = prompt("Edit Brand Name:", data.brand);
+        var newCarName = prompt("Edit Car Name:", data.carName);
+        var newModelName = prompt("Edit Model Name:", data.modelName);
+        if (newBrandName != null && newCarName != null && newModelName != null) {
+          data.brand = newBrandName;
+          data.carName = newCarName;
+          data.modelName = newModelName;
+          table.row($(this).parents('tr')).data(data).draw();
+        }
+      });
+
+      // Handle delete button click
+      $('#save-state tbody').on('click', 'button.delete-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        if (confirm(`Are you sure you want to delete brand: ${data.brand}, car: ${data.carName}, and model: ${data.modelName}?`)) {
+          table.row($(this).parents('tr')).remove().draw();
+        }
+      });
+    });
+  </script>
+
+  <!-- Template JS File -->
+  <script src="/js/scripts.js"></script>
+  <!-- Custom JS File -->
+  <script src="/js/custom.js"></script>
+</body>
+</html>

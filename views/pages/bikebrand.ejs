@@ -26,64 +26,148 @@
     <div class="main-wrapper main-wrapper-1">
       <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
 
-          <!-- Main Content -->
-          <div class="main-content">
-            <section class="section">
-              <div class="section-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4>Table With State Save</h4>
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Add Brand and Model Name</h4>
+                  </div>
+                  <div class="card-body">
+                    <form id="bike-form">
+                      <div class="form-group">
+                        <label for="brandDropdown">Brand Name</label>
+                        <select id="brandDropdown" class="form-control" required>
+                          <option value="" disabled selected>Select a brand</option>
+                        </select>
                       </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                            <thead>
-                              <tr>
-                                <th>_id</th>
-                                <th>userName</th>
-                                <th>phoneNo</th>
-                                <th>email</th>
-                              </tr>
-                            </thead>
-                            <tbody></tbody>
-                          </table>
-                        </div>
+                      <div class="form-group">
+                        <label for="bikeName">Bike Name</label>
+                        <input type="text" id="bikeName" class="form-control" placeholder="Enter Bike name" required>
                       </div>
+                      <div class="form-group">
+                        <label for="modelName">Model Name</label>
+                        <input type="text" id="modelName" class="form-control" placeholder="Enter Model name" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Table With State Save</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Brand</th>
+                            <th>Bike Name</th>
+                            <th>Model Name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
-          <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
     </div>
   </div>
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
-  <!-- JS Libraies -->
+  <!-- JS Libraries -->
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Page Specific JS File -->
-  <!-- <script src="/js/page/datatables.js"></script> -->
 
   <script>
-    $("#save-state").DataTable({
+    var table = $("#save-state").DataTable({
       scrollX: true,
       stateSave: true,
       ajax: {
-        url: "/api/v1/admin/getalluser",
+        url: "https://expterzbackend.onrender.com/api/v1/vehicles",
         type: "GET",
-        dataSrc: "users",
+        dataSrc: function (json) {
+          var data = [];
+          json.data.forEach(function (brand) {
+            brand.bikes.forEach(function (bike) { // Change to use bikes
+              data.push({
+                brand: brand.brand,
+                bikeName: bike.bikeName, // Use bikeName instead of carName
+                modelName: bike.modelName || ''
+              });
+            });
+          });
+          return data;
+        }
       },
       columns: [
-        { data: "_id" },
-        { data: "userName" },
-        { data: "phoneNo" },
-        { data: "email" },
-      ]
+        { data: "brand" },
+        { data: "bikeName" }, // Change to bikeName
+        { data: "modelName" },
+        {
+          data: null,
+          className: "center",
+          defaultContent: '<button class="btn btn-warning btn-sm edit-button">Edit</button> <button class="btn btn-danger btn-sm delete-button">Delete</button>'
+        }
+      ],
+      initComplete: function() {
+        var brands = [];
+        table.column(0).data().each(function(value) {
+          if (brands.indexOf(value) === -1) {
+            brands.push(value);
+            $('#brandDropdown').append(`<option value="${value}">${value}</option>`);
+          }
+        });
+      }
+    });
+
+    document.getElementById('bike-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var brandName = document.getElementById('brandDropdown').value;
+      var bikeName = document.getElementById('bikeName').value;
+      var modelName = document.getElementById('modelName').value;
+      var newRow = table.row.add({
+        brand: brandName,
+        bikeName: bikeName,
+        modelName: modelName
+      }).draw().node();
+      $(newRow).attr('data-brand-name', brandName); // Custom attribute to store the brand name
+      $(newRow).attr('data-bike-name', bikeName); // Custom attribute to store the bike name
+      $(newRow).attr('data-model-name', modelName); // Custom attribute to store the model name
+      document.getElementById('bike-form').reset(); // Reset the form
+    });
+
+    $('#save-state tbody').on('click', 'button.edit-button', function () {
+      var data = table.row($(this).parents('tr')).data();
+      var newBrandName = prompt("Edit Brand Name:", data.brand);
+      var newBikeName = prompt("Edit Bike Name:", data.bikeName);
+      var newModelName = prompt("Edit Model Name:", data.modelName);
+      if (newBrandName != null && newBikeName != null && newModelName != null) {
+        data.brand = newBrandName;
+        data.bikeName = newBikeName;
+        data.modelName = newModelName;
+        table.row($(this).parents('tr')).data(data).draw();
+      }
+    });
+
+    $('#save-state tbody').on('click', 'button.delete-button', function () {
+      var data = table.row($(this).parents('tr')).data();
+      if (confirm(`Are you sure you want to delete brand: ${data.brand}, bike: ${data.bikeName}, and model: ${data.modelName}?`)) {
+        table.row($(this).parents('tr')).remove().draw();
+      }
     });
   </script>
 
