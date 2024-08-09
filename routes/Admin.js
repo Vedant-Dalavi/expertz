@@ -5,12 +5,16 @@ const {
     getAllUser,
     getAllWorker,
     getAllBooking,
-    createNewService,
     addVehicleBrand,
     addBrandCar,
     addBrandBike,
     getAllBrand,
     addCarToService,
+    addBikeToService,
+    createNewCarService,
+    createNewBikeService,
+    getAllCarServices,
+    getAllBikeServices,
 } = require("../controllers/Admin");
 const upload = require("../middleware/fileUpload");
 const { isAdmin } = require("../middleware/auth");
@@ -51,7 +55,13 @@ router.post("/add-brandbike", addBrandBike);
 //                                             Admin Controller Route
 // ***************************************************************************************************************
 
-router.post("/create-service", createNewService);
+router.post("/create-carservice", createNewCarService);
+router.post("/create-bikeservice", createNewBikeService);
+
+router.get("/get-carservice", getAllCarServices);
+router.get("/get-bikeservice", getAllBikeServices);
+
 router.put("/add-carmodel", addCarToService);
+router.put("/add-bikemodel", addBikeToService);
 
 module.exports = router;

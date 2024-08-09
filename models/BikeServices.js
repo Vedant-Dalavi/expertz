@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const carServiceSchema = new mongoose.Schema({
+const bikeServiceSchema = new mongoose.Schema({
     serviceName: {
         type: String,
         required: true,
@@ -13,18 +13,14 @@ const carServiceSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    vehicleType: {
-        type: String,
-        require: true,
-    },
     brands: [
         {
             brand: {
                 type: String,
             },
-            cars: [
+            bikes: [
                 {
-                    carName: {
+                    bikeName: {
                         type: String,
                     },
                     models: [
@@ -52,4 +48,4 @@ const carServiceSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("CarService", carServiceSchema);
+module.exports = mongoose.model("BikeService", bikeServiceSchema);
