@@ -86,11 +86,11 @@ exports.addCar = async (req, res) => {
 exports.addBike = async (req, res) => {
     try {
 
-        const { brand, carData, carNo, model } = req.body;
+        const { brand, bikeData, bikeNo, model } = req.body;
 
         const userId = req.user.id;
 
-        if (!brand || !carData || !carNo || !model || !userId) {
+        if (!brand || !bikeData || !bikeNo || !model || !userId) {
             return res.send(206).json({
                 success: false,
                 message: "Enter full car details"
@@ -107,7 +107,7 @@ exports.addBike = async (req, res) => {
         }
 
 
-        newBike = { brand, carData, carNo, model };
+        newBike = { brand, bikeData, bikeNo, model };
         const userUpdate = await User.findByIdAndUpdate({ _id: userId },
             {
                 $push:
