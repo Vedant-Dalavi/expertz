@@ -61,7 +61,9 @@ exports.getAllWorker = async (req, res) => {
 };
 exports.getAllBooking = async (req, res) => {
     try {
-        const bookings = await Booking.find();
+        const bookings = await Booking.find().populate([
+            { path: 'bookedBy', select: 'userName phoneNo' }
+        ]);
 
         if (!bookings) {
             return res.status(404).json({
