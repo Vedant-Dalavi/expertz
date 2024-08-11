@@ -58,6 +58,10 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    createdAt:{
+        type:Date,
+        default:Date.now()
+    },
     status: {
         type: String,
         default: "Pending",

@@ -1,20 +1,6 @@
 const mongoose = require("mongoose");
 
-<<<<<<< HEAD
-// const serviceSchema = new mongoose.Schema({
-//   serviceName: {
-//     type: String,
-//     required: true,
-//   },
-//   desc:{
-//     type:String,
-//     required:true
-//   },
-//   TnC:{
-//   }
-// });
-=======
-const carServiceSchema = new mongoose.Schema({
+const bikeServiceSchema = new mongoose.Schema({
     serviceName: {
         type: String,
         required: true,
@@ -27,18 +13,14 @@ const carServiceSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    vehicleType: {
-        type: String,
-        require: true,
-    },
     brands: [
         {
             brand: {
                 type: String,
             },
-            cars: [
+            bikes: [
                 {
-                    carName: {
+                    bikeName: {
                         type: String,
                     },
                     models: [
@@ -65,6 +47,5 @@ const carServiceSchema = new mongoose.Schema({
     ]
 
 });
->>>>>>> 086d7064df369385d6901b95c18c9fc7cad522c2
 
-module.exports = mongoose.model("CarService", carServiceSchema);
+module.exports = mongoose.model("BikeService", bikeServiceSchema);

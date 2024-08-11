@@ -22,6 +22,7 @@ exports.newBooking = async (req, res) => {
             }
         }
 
+
         const booked_vehicle = await Booking.create({
             bookedBy: userId,
             date,
@@ -37,6 +38,7 @@ exports.newBooking = async (req, res) => {
                 bookings: booked_vehicle._id
             }
         })
+
 
         return res.status(200).json({
             success: true,
@@ -72,7 +74,9 @@ exports.getUserBooking = async (req, res) => {
         }
 
         // const getBooking = await Booking.find({ bookedBy:userId });
-        const user = await User.findById({ _id: userId }).populate("bookings");
+        const user = await User.findById({ _id: userId }).populate({
+
+        });
         const getBooking = user.bookings;
 
         if (!getBooking) {
@@ -189,7 +193,9 @@ exports.getAllBooking = async (req, res) => {
 
     try {
 
-        const bookings = await Booking.find();
+        const bookings = await Booking.find().populate([
+            { path: 'bookedBy', select: 'userName phoneNo' },
+        ]);
 
         if (!bookings) {
             return res.status(404).json({

@@ -1,3 +1,4 @@
+const Services = require("../models/Services");
 const User = require("../models/User")
 
 exports.getAllUser = async (req, res) => {
@@ -129,4 +130,12 @@ exports.getUserBooking = async (req, res) => {
 
     }
 
+}
+
+exports.getAllServices = async (req,res) =>{
+    try {
+        const services = await Services.find()
+    } catch (error) {
+        
+    }
 }
