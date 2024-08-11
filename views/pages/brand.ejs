@@ -45,8 +45,8 @@
                         <input type="text" id="carName" class="form-control" placeholder="Enter Car name" required>
                       </div>
                       <div class="form-group">
-                        <label for="modelName">Model Name</label>
-                        <input type="text" id="modelName" class="form-control" placeholder="Enter Model name" required>
+                        <label for="modelNames">Model Names</label>
+                        <input type="text" id="modelNames" class="form-control" placeholder="Enter model name" required>
                       </div>
                       <button type="submit" class="btn btn-primary">Add</button>
                     </form>
@@ -64,7 +64,7 @@
                           <tr>
                             <th>Brand</th>
                             <th>Car Name</th>
-                            <th>Model Name</th>
+                            <th>Model Names</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -106,7 +106,7 @@
                 data.push({
                   brand: brand.brand,
                   carName: car.carName,
-                  modelName: car.modelName || ''
+                  modelNames: car.models.join(', ')
                 });
               });
             });
@@ -116,7 +116,7 @@
         columns: [
           { data: "brand" },
           { data: "carName" },
-          { data: "modelName" },
+          { data: "modelNames" },
           {
             data: null,
             className: "center",
@@ -153,17 +153,28 @@
         e.preventDefault();
         var brandName = document.getElementById('brandDropdown').value;
         var carName = document.getElementById('carName').value;
-        var modelName = document.getElementById('modelName').value;
+        var modelNames = document.getElementById('modelNames').value.split(',').map(name => name.trim());
 
-        // Add the car to the table
-        var newRow = table.row.add({
-          brand: brandName,
-          carName: carName,
-          modelName: modelName
-        }).draw().node();
-
-        // Clear the form
-        document.getElementById('car-form').reset();
+        // Make the API call to add the car data
+        $.ajax({
+          url: "https://expterzbackend.onrender.com/api/v1/admin/add-brandcar",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            brand: brandName,
+            carName: carName,
+            models: modelNames
+          }),
+          success: function () {
+            // Reload the table to get the latest data
+            table.ajax.reload();
+            document.getElementById('car-form').reset();
+            alert('Car added successfully.');
+          },
+          error: function (xhr, status, error) {
+            alert('Failed to add car. Please try again.');
+          }
+        });
       });
 
       // Handle edit button click
@@ -171,11 +182,11 @@
         var data = table.row($(this).parents('tr')).data();
         var newBrandName = prompt("Edit Brand Name:", data.brand);
         var newCarName = prompt("Edit Car Name:", data.carName);
-        var newModelName = prompt("Edit Model Name:", data.modelName);
-        if (newBrandName != null && newCarName != null && newModelName != null) {
+        var newModelNames = prompt("Edit Model Names (comma-separated):", data.modelNames);
+        if (newBrandName != null && newCarName != null && newModelNames != null) {
           data.brand = newBrandName;
           data.carName = newCarName;
-          data.modelName = newModelName;
+          data.modelNames = newModelNames;
           table.row($(this).parents('tr')).data(data).draw();
         }
       });
@@ -183,7 +194,7 @@
       // Handle delete button click
       $('#save-state tbody').on('click', 'button.delete-button', function () {
         var data = table.row($(this).parents('tr')).data();
-        if (confirm(`Are you sure you want to delete brand: ${data.brand}, car: ${data.carName}, and model: ${data.modelName}?`)) {
+        if (confirm(`Are you sure you want to delete brand: ${data.brand}, car: ${data.carName}, models: ${data.modelNames}?`)) {
           table.row($(this).parents('tr')).remove().draw();
         }
       });
