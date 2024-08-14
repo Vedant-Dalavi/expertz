@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
-
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title><%= title %></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -24,57 +20,79 @@
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
+      <%- include('../partial/navbar'); %>
+      <%- include('../partial/sidebar'); %>
 
-          <!-- Main Content -->
-          <div class="main-content">
-            <section class="section">
-              <div class="section-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4>Add Service</h4>
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Add Service</h4>
+                  </div>
+                  <div class="card-body">
+                    <form id="service-form">
+                      <div class="form-group">
+                        <label for="serviceName">Service Name</label>
+                        <select id="serviceName" class="form-control" required>
+                          <option value="" disabled selected>Select a service</option>
+                          <option value="Car Service">Car Service</option>
+                          <option value="Bike Service">Bike Service</option>
+                        </select>
                       </div>
-                      <div class="card-body">
-                        <form id="service-form">
-                          <div class="form-group">
-                            <label for="serviceName">Service Name</label>
-                            <input type="text" id="serviceName" class="form-control" placeholder="Enter service name" required>
-                          </div>
-                          <button type="submit" class="btn btn-primary">Add Service</button>
-                        </form>
+                      <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="text" id="price" class="form-control" placeholder="Enter price" required>
                       </div>
-                    </div>
+                      <div class="form-group">
+                        <label for="includes">Includes</label>
+                        <input type="text" id="includes" class="form-control" placeholder="Enter includes" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="serviceInfo">Service Info</label>
+                        <input type="text" id="serviceInfo" class="form-control" placeholder="Enter service info" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="requiredTime">Required Time</label>
+                        <input type="text" id="requiredTime" class="form-control" placeholder="Enter required time" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add Service</button>
+                    </form>
+                  </div>
+                </div>
 
-                    <div class="card">
-                      <div class="card-header">
-                        <h4>Table With State Save</h4>
-                      </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                            <thead>
-                              <tr>
-                                <th>_id</th>
-                                <th>userName</th>
-                                <th>phoneNo</th>
-                                <th>email</th>
-                                <th>serviceName</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody></tbody>
-                          </table>
-                        </div>
-                      </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Table With State Save</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Service Name</th>
+                            <th>Price</th>
+                            <th>Includes</th>
+                            <th>Service Info</th>
+                            <th>Required Time</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
-          <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %>
+      <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
   <!-- General JS Scripts -->
@@ -85,56 +103,90 @@
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
   <script>
-    var table = $("#save-state").DataTable({
-      scrollX: true,
-      stateSave: true,
-      ajax: {
-        url: "/api/v1/admin/getalluser",
-        type: "GET",
-        dataSrc: "users",
-      },
-      columns: [
-        { data: "_id" },
-        { data: "userName" },
-        { data: "phoneNo" },
-        { data: "email" },
-        { data: "serviceName" },
-        {
-          data: null,
-          className: "center",
-          defaultContent: '<button class="btn btn-warning btn-sm edit-button">Edit</button> <button class="btn btn-danger btn-sm delete-button">Delete</button>'
-        }
-      ]
-    });
-
     document.getElementById('service-form').addEventListener('submit', function (e) {
       e.preventDefault();
+
       var serviceName = document.getElementById('serviceName').value;
-      var newRow = table.row.add({
-        _id: '',  // Assuming the _id will be generated by the server or some unique identifier
-        userName: '',  // Assuming empty or default values for other columns
-        phoneNo: '',
-        email: '',
-        serviceName: serviceName
-      }).draw().node();
-      $(newRow).attr('data-service-name', serviceName); // Custom attribute to store the service name
-      document.getElementById('service-form').reset(); // Reset the form
+      var price = document.getElementById('price').value;
+      var includes = document.getElementById('includes').value;
+      var serviceInfo = document.getElementById('serviceInfo').value;
+      var requiredTime = document.getElementById('requiredTime').value;
+
+      // Create new service object
+      var newService = {
+        serviceName: serviceName,
+        price: price,
+        includes: includes,
+        serviceInfo: serviceInfo,
+        requiredTime: requiredTime
+      };
+
+      console.log('New service to be added:', newService);
+
+      // Post the new service to the API
+      fetch('https://expterzbackend.onrender.com/api/v1/service/newService', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newService)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Response from API:', data);
+        if (data.success) {
+          // Initialize DataTable if it hasn't been initialized already
+          var table = $('#save-state').DataTable();
+
+          // Add the new service to the table
+          table.row.add({
+            serviceName: serviceName,
+            price: price,
+            includes: includes,
+            serviceInfo: serviceInfo,
+            requiredTime: requiredTime
+          }).draw(false);
+
+          // Reset the form after submission
+          document.getElementById('service-form').reset();
+        } else {
+          alert('Failed to add service: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error adding service:', error);
+        alert('Error adding service: ' + error.message);
+      });
     });
 
-    $('#save-state tbody').on('click', 'button.edit-button', function () {
-      var data = table.row($(this).parents('tr')).data();
-      var newServiceName = prompt("Edit Service Name:", data.serviceName);
-      if (newServiceName != null) {
-        data.serviceName = newServiceName;
-        table.row($(this).parents('tr')).data(data).draw();
-      }
-    });
+    $(document).ready(function () {
+      // Initialize DataTable with state save feature
+      var table = $('#save-state').DataTable({
+        stateSave: true
+      });
 
-    $('#save-state tbody').on('click', 'button.delete-button', function () {
-      var data = table.row($(this).parents('tr')).data();
-      if (confirm(`Are you sure you want to delete service: ${data.serviceName}?`)) {
-        table.row($(this).parents('tr')).remove().draw();
-      }
+      // Edit button event
+      $('#save-state tbody').on('click', 'button.edit-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var newServiceName = prompt("Edit Service Name:", data.serviceName);
+        if (newServiceName != null) {
+          data.serviceName = newServiceName;
+          table.row($(this).parents('tr')).data(data).draw();
+        }
+      });
+
+      // Delete button event
+      $('#save-state tbody').on('click', 'button.delete-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        if (confirm(`Are you sure you want to delete service: ${data.serviceName}?`)) {
+          table.row($(this).parents('tr')).remove().draw();
+        }
+      });
     });
   </script>
 
@@ -143,7 +195,4 @@
   <!-- Custom JS File -->
   <script src="/js/custom.js"></script>
 </body>
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
-
 </html>

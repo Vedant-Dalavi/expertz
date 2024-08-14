@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
 
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title><%=title%></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -34,7 +31,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Add Brand and Model Name</h4>
+                    <h4>Add Brand and Bike Details</h4>
                   </div>
                   <div class="card-body">
                     <form id="bike-form">
@@ -49,8 +46,8 @@
                         <input type="text" id="bikeName" class="form-control" placeholder="Enter Bike name" required>
                       </div>
                       <div class="form-group">
-                        <label for="modelName">Model Name</label>
-                        <input type="text" id="modelName" class="form-control" placeholder="Enter Model name" required>
+                        <label for="modelNames">Model Names</label>
+                        <input type="text" id="modelNames" class="form-control" placeholder="Enter model names separated by commas" required>
                       </div>
                       <button type="submit" class="btn btn-primary">Add</button>
                     </form>
@@ -68,7 +65,7 @@
                           <tr>
                             <th>Brand</th>
                             <th>Bike Name</th>
-                            <th>Model Name</th>
+                            <th>Model Names</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -82,9 +79,10 @@
           </div>
         </section>
       </div>
-      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
+
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
   <!-- JS Libraries -->
@@ -93,81 +91,116 @@
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
   <script>
-    var table = $("#save-state").DataTable({
-      scrollX: true,
-      stateSave: true,
-      ajax: {
-        url: "https://expterzbackend.onrender.com/api/v1/vehicles",
-        type: "GET",
-        dataSrc: function (json) {
-          var data = [];
-          json.data.forEach(function (brand) {
-            brand.bikes.forEach(function (bike) { // Change to use bikes
-              data.push({
-                brand: brand.brand,
-                bikeName: bike.bikeName, // Use bikeName instead of carName
-                modelName: bike.modelName || ''
+    $(document).ready(function() {
+      // Initialize the DataTable
+      var table = $("#save-state").DataTable({
+        scrollX: true,
+        stateSave: true,
+        ajax: {
+          url: "https://expterzbackend.onrender.com/api/v1/vehicles",
+          type: "GET",
+          dataSrc: function (json) {
+            var data = [];
+            json.data.forEach(function (brand) {
+              brand.bikes.forEach(function (bike) {
+                data.push({
+                  brand: brand.brand,
+                  bikeName: bike.bikeName,
+                  modelNames: bike.models.join(', ')
+                });
               });
             });
-          });
-          return data;
+            return data;
+          }
+        },
+        columns: [
+          { data: "brand" },
+          { data: "bikeName" },
+          { data: "modelNames" },
+          {
+            data: null,
+            className: "center",
+            defaultContent: '<button class="btn btn-warning btn-sm edit-button">Edit</button> <button class="btn btn-danger btn-sm delete-button">Delete</button>'
+          }
+        ],
+        initComplete: function() {
+          populateBrandDropdown();
         }
-      },
-      columns: [
-        { data: "brand" },
-        { data: "bikeName" }, // Change to bikeName
-        { data: "modelName" },
-        {
-          data: null,
-          className: "center",
-          defaultContent: '<button class="btn btn-warning btn-sm edit-button">Edit</button> <button class="btn btn-danger btn-sm delete-button">Delete</button>'
-        }
-      ],
-      initComplete: function() {
-        var brands = [];
-        table.column(0).data().each(function(value) {
-          if (brands.indexOf(value) === -1) {
-            brands.push(value);
-            $('#brandDropdown').append(`<option value="${value}">${value}</option>`);
+      });
+
+      // Populate the brand dropdown
+      function populateBrandDropdown() {
+        $.ajax({
+          url: "https://expterzbackend.onrender.com/api/v1/vehicles",
+          type: "GET",
+          success: function(response) {
+            var brands = [];
+            response.data.forEach(function(brand) {
+              if (brands.indexOf(brand.brand) === -1) {
+                brands.push(brand.brand);
+                $('#brandDropdown').append(`<option value="${brand.brand}">${brand.brand}</option>`);
+              }
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error('Error fetching brands: ' + error);
           }
         });
       }
-    });
 
-    document.getElementById('bike-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var brandName = document.getElementById('brandDropdown').value;
-      var bikeName = document.getElementById('bikeName').value;
-      var modelName = document.getElementById('modelName').value;
-      var newRow = table.row.add({
-        brand: brandName,
-        bikeName: bikeName,
-        modelName: modelName
-      }).draw().node();
-      $(newRow).attr('data-brand-name', brandName); // Custom attribute to store the brand name
-      $(newRow).attr('data-bike-name', bikeName); // Custom attribute to store the bike name
-      $(newRow).attr('data-model-name', modelName); // Custom attribute to store the model name
-      document.getElementById('bike-form').reset(); // Reset the form
-    });
+      // Handle form submission
+      $('#bike-form').submit(function(e) {
+        e.preventDefault();
+        var brandName = $('#brandDropdown').val();
+        var bikeName = $('#bikeName').val();
+        var modelNames = $('#modelNames').val().split(',').map(name => name.trim());
 
-    $('#save-state tbody').on('click', 'button.edit-button', function () {
-      var data = table.row($(this).parents('tr')).data();
-      var newBrandName = prompt("Edit Brand Name:", data.brand);
-      var newBikeName = prompt("Edit Bike Name:", data.bikeName);
-      var newModelName = prompt("Edit Model Name:", data.modelName);
-      if (newBrandName != null && newBikeName != null && newModelName != null) {
-        data.brand = newBrandName;
-        data.bikeName = newBikeName;
-        data.modelName = newModelName;
-        table.row($(this).parents('tr')).data(data).draw();
-      }
-    });
+        if (brandName && bikeName && modelNames.length > 0) {
+          $.ajax({
+            url: "https://expterzbackend.onrender.com/api/v1/admin/add-brandbike",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              brand: brandName,
+              bikeName: bikeName,
+              models: modelNames
+            }),
+            success: function() {
+              // Reload the table to get the latest data
+              table.ajax.reload();
+              $('#bike-form')[0].reset(); // Reset the form
+              alert('Bike added successfully.');
+            },
+            error: function(xhr, status, error) {
+              alert('Failed to add bike. Please try again.');
+            }
+          });
+        } else {
+          alert("Please fill out all fields and ensure model names are provided.");
+        }
+      });
 
-    $('#save-state tbody').on('click', 'button.delete-button', function () {
-      var data = table.row($(this).parents('tr')).data();
-      if (confirm(`Are you sure you want to delete brand: ${data.brand}, bike: ${data.bikeName}, and model: ${data.modelName}?`)) {
-        table.row($(this).parents('tr')).remove().draw();
-      }
+      // Handle edit button click
+      $('#save-state tbody').on('click', 'button.edit-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var newBrandName = prompt("Edit Brand Name:", data.brand);
+        var newBikeName = prompt("Edit Bike Name:", data.bikeName);
+        var newModelNames = prompt("Edit Model Names (comma-separated):", data.modelNames);
+        if (newBrandName != null && newBikeName != null && newModelNames != null) {
+          data.brand = newBrandName;
+          data.bikeName = newBikeName;
+          data.modelNames = newModelNames;
+          table.row($(this).parents('tr')).data(data).draw();
+        }
+      });
+
+      // Handle delete button click
+      $('#save-state tbody').on('click', 'button.delete-button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        if (confirm(`Are you sure you want to delete brand: ${data.brand}, bike: ${data.bikeName}, and models: ${data.modelNames}?`)) {
+          table.row($(this).parents('tr')).remove().draw();
+        }
+      });
     });
   </script>
 
@@ -176,7 +209,5 @@
   <!-- Custom JS File -->
   <script src="/js/custom.js"></script>
 </body>
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
 
 </html>

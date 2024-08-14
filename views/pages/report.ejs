@@ -5,9 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title><%=title%></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -24,45 +22,48 @@
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
+      <%- include('../partial/navbar'); %> 
+      <%- include('../partial/sidebar'); %>
 
-          <!-- Main Content -->
-          <div class="main-content">
-            <section class="section">
-              <div class="section-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4>Table With State Save</h4>
-                      </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                            <thead>
-                              <tr>
-                                <th>_id</th>
-                                <th>userName</th>
-                                <th>phoneNo</th>
-                                <th>email</th>
-                              </tr>
-                            </thead>
-                            <tbody></tbody>
-                          </table>
-                        </div>
-                      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Table With State Save</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>_id</th>
+                            <th>userName</th>
+                            <th>phoneNo</th>
+                            <th>email</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
-          <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %> 
+      <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
+
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
-  <!-- JS Libraies -->
+  <!-- JS Libraries -->
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
@@ -70,20 +71,28 @@
   <!-- <script src="/js/page/datatables.js"></script> -->
 
   <script>
-    $("#save-state").DataTable({
-      scrollX: true,
-      stateSave: true,
-      ajax: {
-        url: "/api/v1/admin/getalluser",
-        type: "GET",
-        dataSrc: "users",
-      },
-      columns: [
-        { data: "_id" },
-        { data: "userName" },
-        { data: "phoneNo" },
-        { data: "email" },
-      ]
+    $(document).ready(function() {
+      $("#save-state").DataTable({
+        scrollX: true,
+        stateSave: true,
+        ajax: {
+          url: "https://expterzbackend.onrender.com/api/v1/admin/getalluser",
+          type: "GET",
+          dataSrc: "users", // Ensure this matches the key in your API response
+          error: function(xhr, error, thrown) {
+            console.error('Error fetching data: ', error);
+          }
+        },
+        columns: [
+          { data: "_id" },
+          { data: "userName" },
+          { data: "phoneNo" },
+          { data: "email" }
+        ],
+        language: {
+          emptyTable: "No users available."
+        }
+      });
     });
   </script>
 

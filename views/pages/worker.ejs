@@ -4,9 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title><%=title%></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -23,7 +21,8 @@
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
+      <%- include('../partial/navbar'); %>
+      <%- include('../partial/sidebar'); %>
 
       <!-- Main Content -->
       <div class="main-content">
@@ -33,25 +32,48 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Worker Table</h4>
+                    <h4>Add Worker</h4>
                   </div>
                   <div class="card-body">
-                    <div class="form-group">
-                      <label for="username">Username</label>
-                      <input type="text" id="username" class="form-control" placeholder="Enter username">
-                    </div>
-                    <div class="form-group">
-                      <label for="workername">Worker Name</label>
-                      <input type="text" id="workername" class="form-control" placeholder="Enter worker name">
-                    </div>
-                    <button id="add-worker-btn" class="btn btn-primary">Add Worker</button>
+                    <form id="worker-form">
+                      <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" class="form-control" placeholder="Enter First Name" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Enter Last Name" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="phoneNo">Phone No</label>
+                        <input type="text" id="phoneNo" class="form-control" placeholder="Enter Phone No" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="alternatePhoneNo">Alternate Phone No</label>
+                        <input type="text" id="alternatePhoneNo" class="form-control" placeholder="Enter Alternate Phone No">
+                      </div>
+                      <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter Email" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="accountType">Account Type</label>
+                        <input type="text" id="accountType" class="form-control" placeholder="Enter Account Type" required>
+                      </div>
+                     
+                      <button type="submit" class="btn btn-primary">Add Worker</button>
+                    </form>
                     <div class="table-responsive mt-4">
                       <table class="table table-striped table-hover" id="worker-table" style="width: 100%">
                         <thead>
                           <tr>
-                            <th>Username</th>
-                            <th>Worker Name</th>
-                            <th>Action</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Phone No</th>
+                            <th>Alternate Phone No</th>
+                            <th>Email</th>
+                            <th>Account Type</th>
+                            <th>Status</th>
                           </tr>
                         </thead>
                         <tbody></tbody>
@@ -64,65 +86,97 @@
           </div>
         </section>
       </div>
-      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+      <%- include('../partial/footer'); %>
+      <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
+  
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
-  <!-- JS Libraies -->
+  <!-- JS Libraries -->
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
   <script>
-    var table = $("#worker-table").DataTable({
-      scrollX: true,
-      stateSave: true,
-      ajax: {
-        url: "/api/v1/admin/getalluser", // Replace with your API endpoint
-        type: "GET",
-        dataSrc: "users",
-      },
-      columns: [
-        { data: "userName" },
-        { data: "workerName" },
-        {
-          data: null,
-          className: "center",
-          defaultContent: '<button class="btn btn-danger btn-sm delete-button">Delete</button>'
-        }
-      ]
-    });
+    $(document).ready(function () {
+      var table = $("#worker-table").DataTable({
+        scrollX: true,
+        stateSave: true,
+        ajax: {
+          url: "http://localhost:4000/api/v1/admin/getallworker",
+          type: "GET",
+          dataSrc: "workers",
+        },
+        columns: [
+          { data: "firstName" },
+          { data: "lastName" },
+          { data: "phoneNo" },
+          { data: "alternatePhoneNo" },
+          { data: "email" },
+          { data: "accountType" },
+          {
+            data: "status",
+            className: "center",
+            render: function (data, type, row) {
+              var checked = data === "active" ? "checked" : "";
+              return `<label class="custom-switch mt-2">
+                        <input type="checkbox" class="custom-switch-input toggle-status" data-id="${row._id}" ${checked}>
+                        <span class="custom-switch-indicator"></span>
+                      </label>`;
+            }
+          }
+        ]
+      });
 
-    $('#worker-table tbody').on('click', 'button.delete-button', function () {
-      var data = table.row($(this).parents('tr')).data();
-      // Add your delete logic here, for example an AJAX call to delete the worker
-      if (confirm(`Are you sure you want to delete worker: ${data.workerName}?`)) {
-        // Perform delete operation (e.g., AJAX call)
-        // On success:
-        table.row($(this).parents('tr')).remove().draw();
-      }
-    });
+      // Add worker functionality
+      $("#worker-form").on('submit', function (e) {
+        e.preventDefault();
 
-    // Add worker functionality
-    $("#add-worker-btn").click(function () {
-      var username = $("#username").val();
-      var workername = $("#workername").val();
-      if (username && workername) {
-        // Add your AJAX call here to add the worker to the backend
-        // On success, add the worker to the table
-        table.row.add({
-          userName: username,
-          workerName: workername,
-          action: null
-        }).draw(false);
+        var workerData = {
+          firstName: $("#firstName").val(),
+          lastName: $("#lastName").val(),
+          phoneNo: $("#phoneNo").val(),
+          alternatePhoneNo: $("#alternatePhoneNo").val(),
+          email: $("#email").val(),
+          accountType: $("#accountType").val(),
+          status: "inactive" // Default status if not provided
+        };
 
-        // Clear the input fields
-        $("#username").val('');
-        $("#workername").val('');
-      } else {
-        alert("Please fill out both fields.");
-      }
+        $.ajax({
+          url: "http://localhost:4000/api/v1/admin/addworker",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(workerData),
+          success: function () {
+            table.ajax.reload(); // Reload the DataTable to show the new worker
+            $("#worker-form")[0].reset(); // Reset the form fields
+            alert('Worker added successfully.');
+          },
+          error: function (xhr, status, error) {
+            alert('Failed to add worker. Please try again.');
+          }
+        });
+      });
+
+      // Toggle worker status
+      $('#worker-table tbody').on('change', '.toggle-status', function () {
+        var workerId = $(this).data('id');
+        var newStatus = $(this).is(':checked') ? 'active' : 'inactive';
+
+        $.ajax({
+          url: `http://localhost:4000/api/v1/admin/updateworkerstatus/${workerId}`,
+          type: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify({ status: newStatus }),
+          success: function () {
+            alert('Worker status updated successfully.');
+          },
+          error: function (xhr, status, error) {
+            alert('Failed to update worker status. Please try again.');
+          }
+        });
+      });
     });
   </script>
 
