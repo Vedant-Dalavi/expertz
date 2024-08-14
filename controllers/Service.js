@@ -16,9 +16,6 @@ exports.newService = async (req, res) => {
             });
         }
 
-
-
-
         return res.status(200).json({
             succeess: true,
             body: req.bodyData,

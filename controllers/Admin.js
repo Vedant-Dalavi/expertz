@@ -9,6 +9,7 @@ const CarServices = require("../models/Services");
 const { uploadImageToCloudinary } = require("../utils/contentUploader");
 const { models } = require("mongoose");
 const BikeServices = require("../models/BikeServices");
+const { model } = require("mongoose");
 
 require("dotenv").config();
 
@@ -407,7 +408,9 @@ exports.createNewBikeService = async (req, res) => {
 exports.getAllCarServices = async (req, res) => {
     try {
 
-        const carServices = await CarServices.find();
+        const carServices = await CarServices.find().populate([
+            { path: 'brands', select: 'brand' }
+        ]);
 
         if (!carServices) {
             return res.status(404).json({
@@ -418,7 +421,7 @@ exports.getAllCarServices = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            messsage: "Bike services fetched successfully",
+            messsage: "Car services fetched successfully",
             data: carServices
         })
 
@@ -462,12 +465,12 @@ exports.getAllBikeServices = async (req, res) => {
 
 exports.addCarToService = async (req, res) => {
     try {
-        const { serviceId, brand, carName, modelDetail } = req.body;
+        const { serviceId, brand, carName, modelDetails } = req.body;
 
-        if (!serviceId || !brand || !carName || !modelDetail || !modelDetail.model || !modelDetail.price) {
+        if (!serviceId || !brand || !carName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "All details are required"
+                message: "All details are required, including a non-empty array of modelDetails"
             });
         }
 
@@ -488,7 +491,7 @@ exports.addCarToService = async (req, res) => {
                 brand: brand,
                 cars: [{
                     carName: carName,
-                    models: [modelDetail]
+                    models: modelDetails // Add all models at once
                 }]
             });
         } else {
@@ -498,11 +501,22 @@ exports.addCarToService = async (req, res) => {
                 // Car doesn't exist, create it
                 service.brands[brandIndex].cars.push({
                     carName: carName,
-                    models: [modelDetail]
+                    models: modelDetails // Add all models at once
                 });
             } else {
-                // Car exists, add the model to the car
-                service.brands[brandIndex].cars[carIndex].models.push(modelDetail);
+                // Car exists, add the models to the car
+                modelDetails.forEach(modelDetail => {
+                    let modelIndex = service.brands[brandIndex].cars[carIndex].models.findIndex(m => m.model === modelDetail.model);
+
+                    if (modelIndex === -1) {
+                        service.brands[brandIndex].cars[carIndex].models.push(modelDetail);
+                    } else {
+                        return res.status(500).json({
+                            success: false,
+                            message: `Model ${modelDetail.model} already exists for this car`
+                        });
+                    }
+                });
             }
         }
 
@@ -511,25 +525,28 @@ exports.addCarToService = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Car model and price added successfully"
+            message: "Car models and prices added successfully"
         });
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: `Error while adding car model to service. Error: ${error}`
+            message: `Error while adding car models to service. Error: ${error}`
         });
     }
 }
 
+
+
+
 exports.addBikeToService = async (req, res) => {
     try {
-        const { serviceId, brand, bikeName, modelDetail } = req.body;
+        const { serviceId, brand, bikeName, modelDetails } = req.body;
 
-        if (!serviceId || !brand || !bikeName || !modelDetail || !modelDetail.model || !modelDetail.price) {
+        if (!serviceId || !brand || !bikeName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "All details are required"
+                message: "All details are required, including a non-empty array of modelDetails"
             });
         }
 
@@ -550,7 +567,7 @@ exports.addBikeToService = async (req, res) => {
                 brand: brand,
                 bikes: [{
                     bikeName: bikeName,
-                    models: [modelDetail]
+                    models: modelDetails // Add all models at once
                 }]
             });
         } else {
@@ -558,13 +575,24 @@ exports.addBikeToService = async (req, res) => {
             let bikeIndex = service.brands[brandIndex].bikes.findIndex(c => c.bikeName === bikeName);
             if (bikeIndex === -1) {
                 // Car doesn't exist, create it
-                service.brands[brandIndex].cars.push({
+                service.brands[brandIndex].bikes.push({
                     bikeName: bikeName,
-                    models: [modelDetail]
+                    models: modelDetails // Add all models at once
                 });
             } else {
-                // Car exists, add the model to the car
-                service.brands[brandIndex].bikes[bikeIndex].models.push(modelDetail);
+                // Car exists, add the models to the car
+                modelDetails.forEach(modelDetail => {
+                    let modelIndex = service.brands[brandIndex].bikes[bikeIndex].models.findIndex(m => m.model === modelDetail.model);
+
+                    if (modelIndex === -1) {
+                        service.brands[brandIndex].bikes[bikeIndex].models.push(modelDetail);
+                    } else {
+                        return res.status(500).json({
+                            success: false,
+                            message: `Model ${modelDetail.model} already exists for this car`
+                        });
+                    }
+                });
             }
         }
 
@@ -573,13 +601,13 @@ exports.addBikeToService = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Car model and price added successfully"
+            message: "Bike models and prices added successfully"
         });
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: `Error while adding car model to service. Error: ${error}`
+            message: `Error while adding car models to service. Error: ${error}`
         });
     }
 }
