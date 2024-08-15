@@ -8,13 +8,13 @@ const otpGenerator = require("otp-generator");
 exports.newBooking = async (req, res) => {
     try {
 
-        const { date, location, bookingSlot, serviceName, alternateNumber, vehicleDetail } = req.body;
+        const { date, location, bookingSlot, serviceName, alternateNumber, vehicleDetail, price } = req.body;
 
 
         const userId = req.user.id;
 
         if (!userId || !date || !bookingSlot || !alternateNumber) {
-            if (!location.long || !location.lat || !vehicleDetail) {
+            if (!location.long || !location.lat || !vehicleDetail || !price) {
                 return res.status(500).json({
                     success: false,
                     message: "Enter all field of booking vehicle"
@@ -31,6 +31,7 @@ exports.newBooking = async (req, res) => {
             bookingSlot,
             alternateNumber,
             vehicleDetail,
+            price
         })
 
         const updateUser = await User.findByIdAndUpdate({ _id: userId }, {
