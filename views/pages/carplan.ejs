@@ -31,53 +31,55 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Add Service</h4>
+                    <h4>Add Car Model</h4>
                   </div>
                   <div class="card-body">
-                    <form id="service-form">
+                    <form id="car-model-form">
                       <div class="form-group">
-                        <label for="serviceName">Service Name</label>
-                        <select id="serviceName" class="form-control" required>
-                          <option value="" disabled selected>Select a service</option>
-                          <option value="Car Service">Car Service</option>
-                          <option value="Bike Service">Bike Service</option>
+                        <label for="service">Service</label>
+                        <select id="service" class="form-control" required>
+                          <option value="">Select a service</option>
                         </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <select id="brand" class="form-control" required>
+                          <option value="">Select a brand</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="carName">Car Name</label>
+                        <select id="carName" class="form-control" required>
+                          <option value="">Select a car</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" id="model" class="form-control" placeholder="Enter model" required>
                       </div>
                       <div class="form-group">
                         <label for="price">Price</label>
                         <input type="text" id="price" class="form-control" placeholder="Enter price" required>
                       </div>
-                      <div class="form-group">
-                        <label for="includes">Includes</label>
-                        <input type="text" id="includes" class="form-control" placeholder="Enter includes" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="serviceInfo">Service Info</label>
-                        <input type="text" id="serviceInfo" class="form-control" placeholder="Enter service info" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="requiredTime">Required Time</label>
-                        <input type="text" id="requiredTime" class="form-control" placeholder="Enter required time" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Add Service</button>
+                      <button type="submit" class="btn btn-primary">Add Car Model</button>
                     </form>
                   </div>
                 </div>
 
                 <div class="card">
                   <div class="card-header">
-                    <h4>Table With State Save</h4>
+                    <h4>Car Models Table</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
                       <table class="table table-striped table-hover" id="save-state" style="width: 100%">
                         <thead>
                           <tr>
-                            <th>Service Name</th>
+                            <th>Service</th>
+                            <th>Brand</th>
+                            <th>Car Name</th>
+                            <th>Model</th>
                             <th>Price</th>
-                            <th>Includes</th>
-                            <th>Service Info</th>
-                            <th>Required Time</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -103,33 +105,17 @@
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
   <script>
-    document.getElementById('service-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function () {
+      var table = $('#save-state').DataTable({
+        stateSave: true
+      });
 
-      var serviceName = document.getElementById('serviceName').value;
-      var price = document.getElementById('price').value;
-      var includes = document.getElementById('includes').value;
-      var serviceInfo = document.getElementById('serviceInfo').value;
-      var requiredTime = document.getElementById('requiredTime').value;
-
-      // Create new service object
-      var newService = {
-        serviceName: serviceName,
-        price: price,
-        includes: includes,
-        serviceInfo: serviceInfo,
-        requiredTime: requiredTime
-      };
-
-      console.log('New service to be added:', newService);
-
-      // Post the new service to the API
-      fetch('https://expterzbackend.onrender.com/api/v1/service/newService', {
-        method: 'POST',
+      // Fetch services and populate the service dropdown
+      fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newService)
+        }
       })
       .then(response => {
         if (!response.ok) {
@@ -138,53 +124,173 @@
         return response.json();
       })
       .then(data => {
-        console.log('Response from API:', data);
-        if (data.success) {
-          // Initialize DataTable if it hasn't been initialized already
-          var table = $('#save-state').DataTable();
+        console.log('Services fetched from API:', data);
 
-          // Add the new service to the table
-          table.row.add({
-            serviceName: serviceName,
-            price: price,
-            includes: includes,
-            serviceInfo: serviceInfo,
-            requiredTime: requiredTime
-          }).draw(false);
+        if (data && data.success && Array.isArray(data.data)) {
+          var serviceSelect = document.getElementById('service');
+          serviceSelect.innerHTML = '<option value="">Select a service</option>';
+          data.data.forEach(service => {
+            if (service._id && service.serviceName) {
+              var option = document.createElement('option');
+              option.value = service._id;
+              option.textContent = service.serviceName;
+              serviceSelect.appendChild(option);
+            }
+          });
 
-          // Reset the form after submission
-          document.getElementById('service-form').reset();
+          // Populate table with data from the API
+          populateTable(data.data);
+
+          // Update brands dropdown based on selected service
+          serviceSelect.addEventListener('change', function () {
+            var selectedServiceId = this.value;
+            var brandSelect = document.getElementById('brand');
+            var carNameSelect = document.getElementById('carName');
+            brandSelect.innerHTML = '<option value="">Select a brand</option>';
+            carNameSelect.innerHTML = '<option value="">Select a car</option>';
+
+            var selectedService = data.data.find(service => service._id === selectedServiceId);
+            if (selectedService && selectedService.brands) {
+              selectedService.brands.forEach(brand => {
+                if (brand._id && brand.brand) {
+                  var option = document.createElement('option');
+                  option.value = brand._id;
+                  option.textContent = brand.brand;
+                  brandSelect.appendChild(option);
+                }
+              });
+
+              // Update cars dropdown based on selected brand
+              brandSelect.addEventListener('change', function () {
+                var selectedBrandId = this.value;
+                carNameSelect.innerHTML = '<option value="">Select a car</option>';
+
+                var selectedBrand = selectedService.brands.find(brand => brand._id === selectedBrandId);
+                if (selectedBrand && selectedBrand.cars) {
+                  selectedBrand.cars.forEach(car => {
+                    if (car._id && car.carName) {
+                      var option = document.createElement('option');
+                      option.value = car._id;
+                      option.textContent = car.carName;
+                      carNameSelect.appendChild(option);
+                    }
+                  });
+                }
+              });
+            }
+          });
         } else {
-          alert('Failed to add service: ' + data.message);
+          console.error('Invalid services data:', data);
+          alert('Failed to load services: ' + (data.message || 'Unknown error'));
         }
       })
       .catch(error => {
-        console.error('Error adding service:', error);
-        alert('Error adding service: ' + error.message);
-      });
-    });
-
-    $(document).ready(function () {
-      // Initialize DataTable with state save feature
-      var table = $('#save-state').DataTable({
-        stateSave: true
+        console.error('Error fetching services:', error);
+        alert('Error fetching services: ' + error.message);
       });
 
-      // Edit button event
+      // Populate table with car models
+      function populateTable(services) {
+        services.forEach(service => {
+          if (service.brands && Array.isArray(service.brands)) {
+            service.brands.forEach(brand => {
+              if (brand.cars && Array.isArray(brand.cars)) {
+                brand.cars.forEach(car => {
+                  if (car.models && Array.isArray(car.models)) {
+                    car.models.forEach(model => {
+                      table.row.add([
+                        service.serviceName, // Service Name
+                        brand.brand, // Brand Name
+                        car.carName,
+                        model.model,
+                        model.price,
+                        `<button class="btn btn-warning edit-button">Edit</button>
+                         <button class="btn btn-danger delete-button">Delete</button>`
+                      ]).draw(false);
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+
+      // Handle form submission
+      document.getElementById('car-model-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var serviceId = document.getElementById('service').value;
+        var brandId = document.getElementById('brand').value;
+        var carId = document.getElementById('carName').value; // Get selected car ID
+        var model = document.getElementById('model').value;
+        var price = document.getElementById('price').value;
+
+        var newCarModel = {
+          serviceId: serviceId,
+          brandId: brandId,
+          carId: carId, // Send the car ID
+          modelDetail: {
+            model: model,
+            price: price
+          }
+        };
+
+        console.log('New car model to be added:', newCarModel);
+
+        fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newCarModel)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Response from API:', data);
+          if (data.success) {
+            table.row.add([
+              document.querySelector('#service option:checked').textContent,
+              document.querySelector('#brand option:checked').textContent,
+              document.querySelector('#carName option:checked').textContent,
+              model,
+              price,
+              `<button class="btn btn-warning edit-button">Edit</button>
+               <button class="btn btn-danger delete-button">Delete</button>`
+            ]).draw(false);
+
+            document.getElementById('car-model-form').reset();
+          } else {
+            alert('Failed to add car model: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error adding car model:', error);
+          alert('Error adding car model: ' + error.message);
+        });
+      });
+
+      // Handle row edit and delete
       $('#save-state tbody').on('click', 'button.edit-button', function () {
-        var data = table.row($(this).parents('tr')).data();
-        var newServiceName = prompt("Edit Service Name:", data.serviceName);
-        if (newServiceName != null) {
-          data.serviceName = newServiceName;
-          table.row($(this).parents('tr')).data(data).draw();
+        var row = table.row($(this).parents('tr'));
+        var data = row.data();
+        var newBrand = prompt("Edit Brand:", data[1]);
+        if (newBrand != null) {
+          data[1] = newBrand;
+          row.data(data).draw();
         }
       });
 
-      // Delete button event
       $('#save-state tbody').on('click', 'button.delete-button', function () {
-        var data = table.row($(this).parents('tr')).data();
-        if (confirm(`Are you sure you want to delete service: ${data.serviceName}?`)) {
-          table.row($(this).parents('tr')).remove().draw();
+        var row = table.row($(this).parents('tr'));
+        var data = row.data();
+        if (confirm(`Are you sure you want to delete car model: ${data[2]}?`)) {
+          row.remove().draw();
         }
       });
     });
