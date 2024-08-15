@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title><%=title%></title>
+  <title><%= title %></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -15,6 +15,20 @@
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="/css/custom.css" />
   <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+
+  <style>
+    .status-pending {
+      background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+    }
+
+    .status-complete {
+      background-color: rgba(0, 255, 0, 0.1); /* Light green background */
+    }
+
+    .status-confirm {
+      background-color: rgba(255, 165, 0, 0.1); /* Light orange background */
+    }
+  </style>
 </head>
 
 <body>
@@ -91,13 +105,35 @@
           { data: "alternateNumber" },
           { data: "vehicleDetail.brand" },
           { data: "vehicleDetail.vehicleName" },
-          { data: "status" },
+          {
+            data: "status",
+            render: function (data, type, row) {
+              return data; // Display status as plain text
+            }
+          },
           {
             data: null,
             defaultContent: '<button class="btn btn-primary print-btn">Print Invoice</button>',
             orderable: false
           }
         ],
+        rowCallback: function (row, data, index) {
+          // Apply background color based on status
+          var status = data.status;
+          var className = '';
+          switch (status) {
+            case 'Pending':
+              className = 'status-pending';
+              break;
+            case 'Complete':
+              className = 'status-complete';
+              break;
+            case 'Confirm':
+              className = 'status-confirm';
+              break;
+          }
+          $(row).addClass(className);
+        },
         language: {
           emptyTable: "No bookings available."
         }
