@@ -74,9 +74,7 @@ exports.getUserBooking = async (req, res) => {
         }
 
         // const getBooking = await Booking.find({ bookedBy:userId });
-        const user = await User.findById({ _id: userId }).populate({
-
-        });
+        const user = await User.findById({ _id: userId }).populate("bookings");
         const getBooking = user.bookings;
 
         if (!getBooking) {
