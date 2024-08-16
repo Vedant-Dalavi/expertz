@@ -1,190 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>Add New Service</title>
-  <link rel="stylesheet" href="/css/app.min.css" />
-  <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
-  <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/custom.css" />
-  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
-  <style>
-    .image-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .image-preview img {
-      max-width: 150px;
-      max-height: 150px;
-      object-fit: cover;
-      border: 1px solid #ddd;
-      padding: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
+    <title>Add New Service</title>
+    <link rel="stylesheet" href="/css/app.min.css" />
+    <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
+    <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <style>
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .image-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
 <body>
-  <div class="loader"></div>
-  <div id="app">
-    <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %> 
-      <%- include('../partial/sidebar'); %>
+    <div class="loader"></div>
+    <div id="app">
+        <div class="main-wrapper main-wrapper-1">
+            <%- include('../partial/navbar'); %>
+                <%- include('../partial/sidebar'); %>
 
-      <div class="main-content">
-        <section class="section">
-          <div class="section-body">
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Add New Service</h4>
-                  </div>
-                  <div class="card-body">
-                    <form id="service-form">
-                      <div class="form-group">
-                        <label for="serviceName">Service Name</label>
-                        <input type="text" id="serviceName" class="form-control" placeholder="Enter service name" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="desc">Description</label>
-                        <textarea id="desc" class="form-control" placeholder="Enter description" required></textarea>
-                      </div>
-                      <div class="form-group">
-                        <label for="TnC">Terms and Conditions</label>
-                        <textarea id="TnC" class="form-control" placeholder="Enter terms and conditions" required></textarea>
-                      </div>
-                      <div class="form-group">
-                        <label for="image">Upload Images</label>
-                        <input type="file" id="image" class="form-control-file" accept="image/*" multiple required>
-                      </div>
-                      <div class="form-group">
-                        <label>Image Preview</label>
-                        <div id="imagePreview" class="image-preview"></div>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Add Service</button>
-                    </form>
-                  </div>
-                </div>
+                    <div class="main-content">
+                        <section class="section">
+                            <div class="section-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>Add New Service</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <form id="service-form" enctype="multipart/form-data">
+                                                    <div class="form-group">
+                                                        <label for="serviceName">Service Name</label>
+                                                        <input type="text" id="serviceName" class="form-control"
+                                                            placeholder="Enter service name" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="desc">Description</label>
+                                                        <textarea id="desc" class="form-control"
+                                                            placeholder="Enter description" required></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="TnC">Terms and Conditions</label>
+                                                        <textarea id="TnC" class="form-control"
+                                                            placeholder="Enter terms and conditions"
+                                                            required></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="image">Upload Images</label>
+                                                        <input type="file" id="image" class="form-control-file"
+                                                            accept="image/*" multiple required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Image Preview</label>
+                                                        <div id="imagePreview" class="image-preview"></div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Add Service</button>
+                                                </form>
+                                            </div>
+                                        </div>
 
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Service Table</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                        <thead>
-                          <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Terms and Conditions</th>
-                            <th>Images</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>Service Table</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-hover" id="save-state"
+                                                        style="width: 100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Service Name</th>
+                                                                <th>Description</th>
+                                                                <th>Terms and Conditions</th>
+                                                                <th>Images</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <%- include('../partial/footer'); %>
-      <%- include('../partial/site-settings.ejs'); %>
+                    <%- include('../partial/footer'); %>
+                        <%- include('../partial/site-settings.ejs'); %>
+        </div>
     </div>
-  </div>
 
-  <script src="/js/app.min.js"></script>
-  <script src="/bundles/datatables/datatables.min.js"></script>
-  <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
-  <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/js/app.min.js"></script>
+    <script src="/bundles/datatables/datatables.min.js"></script>
+    <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
-  <script>
-    $(document).ready(function() {
-      var table = $('#save-state').DataTable({
-        scrollX: true,
-        stateSave: true
-      });
+    <script>
+        $(document).ready(function () {
+            var table = $('#save-state').DataTable({
+                scrollX: true,
+                stateSave: true
+            });
 
-      $('#image').on('change', function() {
-        var previewContainer = $('#imagePreview');
-        previewContainer.empty();
+            $('#image').on('change', function () {
+                var previewContainer = $('#imagePreview');
+                previewContainer.empty();
 
-        var files = $(this)[0].files;
-        for (var i = 0; i < files.length; i++) {
-          var reader = new FileReader();
-          reader.onload = (function(file) {
-            return function(e) {
-              var imgElement = $('<img>').attr('src', e.target.result).attr('title', file.name);
-              previewContainer.append(imgElement);
-            };
-          })(files[i]);
-          reader.readAsDataURL(files[i]);
-        }
-      });
+                var files = $(this)[0].files;
+                for (var i = 0; i < files.length; i++) {
+                    var reader = new FileReader();
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var imgElement = $('<img>').attr('src', e.target.result).attr('title', file.name);
+                            previewContainer.append(imgElement);
+                        };
+                    })(files[i]);
+                    reader.readAsDataURL(files[i]);
+                }
+            });
 
-      $('#service-form').on('submit', function(e) {
-        e.preventDefault();
+            $('#service-form').on('submit', function (e) {
+                e.preventDefault();
 
-        var formData = new FormData();
-        formData.append('serviceName', $('#serviceName').val());
-        formData.append('desc', $('#desc').val());
-        formData.append('TnC', $('#TnC').val());
+                var formData = new FormData();
+                formData.append('serviceName', $('#serviceName').val());
+                formData.append('desc', $('#desc').val());
+                formData.append('TnC', $('#TnC').val());
 
-        var files = $('#image')[0].files;
-        for (var i = 0; i < files.length; i++) {
-          formData.append('content', files[i]);
-        }
+                var files = $('#image')[0].files;
+                for (var i = 0; i < files.length; i++) {
+                    formData.append('content', files[i]);
+                }
 
-        $.ajax({
-          url: 'https://expterzbackend.onrender.com/api/v1/admin/create-carservice',
-          type: 'POST',
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function(response) {
-            if (response.success) {
-              var imageHtml = response.data.images.map((imageUrl) => {
-                return `<img src="${imageUrl}" alt="Service Image" width="100" />`;
-              }).join(' ');
+                $.ajax({
+                    url: 'https://expterzbackend.onrender.com/api/v1/admin/create-carservice',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.json())
+                            var imageHtml = response.data.images.map((imageUrl) => {
+                                return `<img src="${imageUrl}" alt="Service Image" width="100" />`;
+                            }).join(' ');
 
-              table.row.add([
-                response.data.serviceName,
-                response.data.desc,
-                response.data.TnC,
-                imageHtml
-              ]).draw(false);
+                            table.row.add([
+                                response.data.serviceName,
+                                response.data.desc,
+                                response.data.TnC,
+                                imageHtml
+                            ]).draw(false);
 
-              $('#service-form')[0].reset();
-              $('#imagePreview').empty();
-            } else {
-              console.error('Failed to add service:', response.message || 'Unknown error');
-              alert('Failed to add service: ' + (response.message || 'Unknown error'));
-            }
-          },
-          error: function(xhr, status, error) {
-            var errorMessage = 'An error occurred. Please try again.';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-              errorMessage = xhr.responseJSON.message;
-            } else if (xhr.responseText) {
-              errorMessage = xhr.responseText;
-            }
-            console.error('Error adding service:', errorMessage);
-            alert('Error adding service: ' + errorMessage);
-          }
+                            $('#service-form')[0].reset();
+                            $('#imagePreview').empty();
+                        } else {
+                            console.error('Failed to add service:', response.message || 'Unknown error');
+                            alert('Failed to add service: ' + (response.message || 'Unknown error'));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = 'An error occurred. Please try again.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            errorMessage = xhr.responseText;
+                        }
+                        console.error('Error adding service:', errorMessage);
+                        alert('Error adding service: ' + errorMessage);
+                    }
+                });
+            });
         });
-      });
-    });
-  </script>
 
-  <script src="/js/scripts.js"></script>
-  <script src="/js/custom.js"></script>
+    </script>
+
+    <script src="/js/scripts.js"></script>
+    <script src="/js/custom.js"></script>
 </body>
+
 </html>
