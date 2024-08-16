@@ -4,18 +4,26 @@ const { adminSignup, adminLogin } = require("../controllers/Auth");
 const {
     getAllUser,
     getAllWorker,
-    getAllBooking,
-    addVehicleBrand,
-    addBrandCar,
-    addBrandBike,
-    getAllBrand,
+    getAllBooking
+} = require("../controllers/Admin");
+
+const {
     addCarToService,
     addBikeToService,
     createNewCarService,
     createNewBikeService,
     getAllCarServices,
     getAllBikeServices,
-} = require("../controllers/Admin");
+} = require("../controllers/Admin/AdminService");
+
+const {
+    addVehicleBrand,
+    addBrandCar,
+    addBrandBike,
+    getAllBrand
+} = require("../controllers/Admin/AdminVehicle")
+
+
 const upload = require("../middleware/fileUpload");
 const { isAdmin } = require("../middleware/auth");
 

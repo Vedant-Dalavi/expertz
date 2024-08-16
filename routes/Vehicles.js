@@ -19,6 +19,7 @@ const {
 
 
 const { auth } = require("../middleware/auth")
+const { deleteCar } = require("../controllers/Cars")
 
 // Routes for Login, Signup, and Authentication
 
@@ -41,6 +42,7 @@ router.get("/getuserbike", auth, getUserBike);
 //                                  Booking Routes
 // *******************************************************************************************************
 
+router.delete("/deletecar", auth, deleteCar);
 
 router.post("/new-booking", newBooking);
 

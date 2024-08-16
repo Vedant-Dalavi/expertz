@@ -5,7 +5,8 @@ const router = express.Router()
 // Import the required controllers and middleware functions
 const {
     CarsInfo,
-    addCar
+    addCar,
+    deleteCar
 } = require("../controllers/Cars")
 
 
@@ -23,6 +24,7 @@ router.get("/get-car", CarsInfo);
 // insert a car in user's cars
 
 router.put("/addcar", addCar);
+router.delete("/deletecar", deleteCar);
 
 
 module.exports = router

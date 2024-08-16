@@ -65,3 +65,39 @@ exports.addCar = async (req, res) => {
 
     }
 }
+
+exports.deleteCar = async (req, res) => {
+
+    try {
+
+        const carId = req.body;
+        const userId = req.user.id
+        if (!carId) {
+            return res.status(404).jsonn({
+                success: false,
+                message: "carId not found"
+            })
+        }
+
+        const deletedCar = await User.findByIdAndDelete({ _id: userId }, {
+            $pull: {
+                cars: _id=carId
+            }
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "User Car Deleted Successfully",
+            data: deletedCar
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error While Deleting user Car. Error: ${error}`
+        })
+
+    }
+
+}
