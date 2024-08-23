@@ -14,6 +14,33 @@
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="/css/custom.css" />
   <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+  <style>
+    .model-sticker {
+      display: inline-block;
+      background-color: #007bff;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 2px;
+      position: relative;
+    }
+    .model-sticker .remove-sticker {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
@@ -54,14 +81,26 @@
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="model">Model</label>
-                        <input type="text" id="model" class="form-control" placeholder="Enter model" required>
+                        <label for="model-table">Model</label>
+                        <div class="table-responsive">
+                          <table class="table table-bordered" id="model-table">
+                            <thead>
+                              <tr>
+                                <th>Model</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody></tbody>
+                          </table>
+                        </div>
+                        <div class="d-flex align-items-center mt-2">
+                          <input type="text" id="model" class="form-control" placeholder="Enter model name" />
+                          <input type="number" id="price" class="form-control ml-2" placeholder="Enter price" />
+                          <button type="button" id="add-model" class="btn btn-primary ml-2">Add</button>
+                        </div>
+                        <button type="button" id="add-all-models" class="btn btn-success mt-2">Add All Models</button>
                       </div>
-                      <div class="form-group">
-                        <label for="price">Price</label>
-                        <input type="text" id="price" class="form-control" placeholder="Enter price" required>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Add Car Model</button>
                     </form>
                   </div>
                 </div>
@@ -117,15 +156,8 @@
           'Content-Type': 'application/json'
         }
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
-        console.log('Services fetched from API:', data);
-
         if (data && data.success && Array.isArray(data.data)) {
           var serviceSelect = document.getElementById('service');
           serviceSelect.innerHTML = '<option value="">Select a service</option>';
@@ -148,34 +180,76 @@
             var carNameSelect = document.getElementById('carName');
             brandSelect.innerHTML = '<option value="">Select a brand</option>';
             carNameSelect.innerHTML = '<option value="">Select a car</option>';
+            document.getElementById('carName').value = '';
 
-            var selectedService = data.data.find(service => service._id === selectedServiceId);
-            if (selectedService && selectedService.brands) {
-              selectedService.brands.forEach(brand => {
-                if (brand._id && brand.brand) {
-                  var option = document.createElement('option');
-                  option.value = brand._id;
-                  option.textContent = brand.brand;
-                  brandSelect.appendChild(option);
+            if (selectedServiceId) {
+              fetch('https://expterzbackend.onrender.com/api/v1/admin/getallvehicle', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
                 }
+              })
+              .then(response => response.json())
+              .then(brandData => {
+                if (brandData && brandData.success && Array.isArray(brandData.data)) {
+                  brandSelect.innerHTML = '<option value="">Select a brand</option>';
+                  brandData.data.forEach(item => {
+                    if (item._id && item.brand) {
+                      var option = document.createElement('option');
+                      option.value = item._id;
+                      option.textContent = item.brand;
+                      brandSelect.appendChild(option);
+                    }
+                  });
+                } else {
+                  console.error('Invalid brands data:', brandData);
+                  alert('Failed to load brands: ' + (brandData.message || 'Unknown error'));
+                }
+              })
+              .catch(error => {
+                console.error('Error fetching brands:', error);
+                alert('Error fetching brands: ' + error.message);
               });
+            }
+          });
 
-              // Update cars dropdown based on selected brand
-              brandSelect.addEventListener('change', function () {
-                var selectedBrandId = this.value;
-                carNameSelect.innerHTML = '<option value="">Select a car</option>';
+          // Update car names based on selected brand
+          document.getElementById('brand').addEventListener('change', function () {
+            var selectedBrandId = this.value;
+            var carNameSelect = document.getElementById('carName');
+            carNameSelect.innerHTML = '<option value="">Select a car</option>';
 
-                var selectedBrand = selectedService.brands.find(brand => brand._id === selectedBrandId);
-                if (selectedBrand && selectedBrand.cars) {
-                  selectedBrand.cars.forEach(car => {
-                    if (car._id && car.carName) {
+            if (selectedBrandId) {
+              fetch('https://expterzbackend.onrender.com/api/v1/admin/getallvehicle', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+              .then(response => response.json())
+              .then(vehicleData => {
+                if (vehicleData && vehicleData.success && Array.isArray(vehicleData.data)) {
+                  var selectedBrand = vehicleData.data.find(item => item._id === selectedBrandId);
+                  if (selectedBrand && Array.isArray(selectedBrand.cars)) {
+                    carNameSelect.innerHTML = '<option value="">Select a car</option>';
+                    selectedBrand.cars.forEach(car => {
                       var option = document.createElement('option');
                       option.value = car._id;
                       option.textContent = car.carName;
                       carNameSelect.appendChild(option);
-                    }
-                  });
+                    });
+                  } else {
+                    console.error('Brand not found:', selectedBrandId);
+                    alert('Failed to load cars for the selected brand.');
+                  }
+                } else {
+                  console.error('Invalid vehicle data:', vehicleData);
+                  alert('Failed to load cars: ' + (vehicleData.message || 'Unknown error'));
                 }
+              })
+              .catch(error => {
+                console.error('Error fetching cars:', error);
+                alert('Error fetching cars: ' + error.message);
               });
             }
           });
@@ -198,14 +272,15 @@
                 brand.cars.forEach(car => {
                   if (car.models && Array.isArray(car.models)) {
                     car.models.forEach(model => {
+                      // Assuming we have a way to get price for each model, if not, you can leave it as empty or default
                       table.row.add([
-                        service.serviceName, // Service Name
-                        brand.brand, // Brand Name
+                        service.serviceName,
+                        brand.brand,
                         car.carName,
-                        model.model,
-                        model.price,
-                        `<button class="btn btn-warning edit-button">Edit</button>
-                         <button class="btn btn-danger delete-button">Delete</button>`
+                        model,
+                        'N/A', // Placeholder for price, update this with actual price if available
+                        '<button class="btn btn-warning edit-button">Edit</button>' +
+                        '<button class="btn btn-danger delete-button">Delete</button>'
                       ]).draw(false);
                     });
                   }
@@ -216,82 +291,93 @@
         });
       }
 
-      // Handle form submission
+      // Add model to the model table
+      document.getElementById('add-model').addEventListener('click', function () {
+        var modelInput = document.getElementById('model');
+        var modelValue = modelInput.value.trim();
+        var priceInput = document.getElementById('price');
+        var priceValue = priceInput.value.trim();
+
+        if (modelValue && priceValue) {
+          var modelTableBody = document.querySelector('#model-table tbody');
+          var row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${modelValue}</td>
+            <td>${priceValue}</td>
+            <td><button type="button" class="btn btn-danger btn-sm remove-model">Remove</button></td>
+          `;
+          modelTableBody.appendChild(row);
+          modelInput.value = '';
+          priceInput.value = '';
+
+          // Remove row when the remove button is clicked
+          row.querySelector('.remove-model').addEventListener('click', function () {
+            modelTableBody.removeChild(row);
+          });
+        } else {
+          alert('Please enter both model and price.');
+        }
+      });
+
+      // Add all models from the model table to the main table
+      document.getElementById('add-all-models').addEventListener('click', function () {
+        var modelTableBody = document.querySelector('#model-table tbody');
+        var rows = modelTableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+          var cells = row.querySelectorAll('td');
+          var model = cells[0].textContent.trim();
+          var price = cells[1].textContent.trim();
+
+          table.row.add([
+            document.getElementById('service').options[document.getElementById('service').selectedIndex].text,
+            document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text,
+            document.getElementById('carName').options[document.getElementById('carName').selectedIndex].text,
+            model,
+            price,
+            '<button class="btn btn-warning edit-button">Edit</button>' +
+            '<button class="btn btn-danger delete-button">Delete</button>'
+          ]).draw(false);
+        });
+
+        // Clear the model table after adding to the main table
+        modelTableBody.innerHTML = '';
+      });
+
+      // Add event listener for form submission
       document.getElementById('car-model-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
-        var serviceId = document.getElementById('service').value;
-        var brandId = document.getElementById('brand').value;
-        var carId = document.getElementById('carName').value; // Get selected car ID
-        var model = document.getElementById('model').value;
-        var price = document.getElementById('price').value;
-
-        var newCarModel = {
-          serviceId: serviceId,
-          brandId: brandId,
-          carId: carId, // Send the car ID
-          modelDetail: {
-            model: model,
-            price: price
-          }
+        var formData = {
+          service: document.getElementById('service').value,
+          brand: document.getElementById('brand').value,
+          carName: document.getElementById('carName').value,
+          models: Array.from(document.querySelectorAll('#model-table tbody tr')).map(row => {
+            var cells = row.querySelectorAll('td');
+            return {
+              model: cells[0].textContent.trim(),
+              price: cells[1].textContent.trim()
+            };
+          })
         };
+        console.log('Form data:', formData);
 
-        console.log('New car model to be added:', newCarModel);
-
-        fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newCarModel)
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('Response from API:', data);
-          if (data.success) {
-            table.row.add([
-              document.querySelector('#service option:checked').textContent,
-              document.querySelector('#brand option:checked').textContent,
-              document.querySelector('#carName option:checked').textContent,
-              model,
-              price,
-              `<button class="btn btn-warning edit-button">Edit</button>
-               <button class="btn btn-danger delete-button">Delete</button>`
-            ]).draw(false);
-
-            document.getElementById('car-model-form').reset();
-          } else {
-            alert('Failed to add car model: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error adding car model:', error);
-          alert('Error adding car model: ' + error.message);
+        // Add the new car model to the table
+        formData.models.forEach(model => {
+          table.row.add([
+            document.getElementById('service').options[document.getElementById('service').selectedIndex].text,
+            document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text,
+            document.getElementById('carName').options[document.getElementById('carName').selectedIndex].text,
+            model.model,
+            model.price,
+            '<button class="btn btn-warning edit-button">Edit</button>' +
+            '<button class="btn btn-danger delete-button">Delete</button>'
+          ]).draw(false);
         });
-      });
 
-      // Handle row edit and delete
-      $('#save-state tbody').on('click', 'button.edit-button', function () {
-        var row = table.row($(this).parents('tr'));
-        var data = row.data();
-        var newBrand = prompt("Edit Brand:", data[1]);
-        if (newBrand != null) {
-          data[1] = newBrand;
-          row.data(data).draw();
-        }
-      });
-
-      $('#save-state tbody').on('click', 'button.delete-button', function () {
-        var row = table.row($(this).parents('tr'));
-        var data = row.data();
-        if (confirm(`Are you sure you want to delete car model: ${data[2]}?`)) {
-          row.remove().draw();
-        }
+        // Reset form
+        this.reset();
+        document.getElementById('model-table').querySelector('tbody').innerHTML = '';
       });
     });
   </script>
