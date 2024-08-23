@@ -5,6 +5,7 @@ const Worker = require("../models/worker");
 const otpGenerator = require("otp-generator");
 
 
+
 exports.newBooking = async (req, res) => {
     try {
 
@@ -34,12 +35,12 @@ exports.newBooking = async (req, res) => {
             price
         })
 
+
         const updateUser = await User.findByIdAndUpdate({ _id: userId }, {
             $push: {
                 bookings: booked_vehicle._id
             }
         })
-
 
         return res.status(200).json({
             success: true,
@@ -47,17 +48,13 @@ exports.newBooking = async (req, res) => {
             data: booked_vehicle
         })
 
-
     } catch (error) {
-
         console.log("Error in Booking vehicle" + error)
 
         return res.status(500).json({
             success: false,
             message: error.message
         })
-
-
     }
 }
 
@@ -340,8 +337,3 @@ exports.completeBooking = async (req, res) => {
 
     }
 }
-
-
-
-
-

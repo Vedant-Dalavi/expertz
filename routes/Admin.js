@@ -14,6 +14,7 @@ const {
     createNewBikeService,
     getAllCarServices,
     getAllBikeServices,
+    updateCarService,
 } = require("../controllers/Admin/AdminService");
 
 const {
@@ -60,7 +61,7 @@ router.post("/add-brandcar", addBrandCar);
 router.post("/add-brandbike", addBrandBike);
 
 // ***************************************************************************************************************
-//                                             Admin Controller Route
+//                                             Admin new service Route
 // ***************************************************************************************************************
 
 router.post("/create-carservice", createNewCarService);
@@ -71,5 +72,13 @@ router.get("/get-bikeservice", getAllBikeServices);
 
 router.put("/add-carmodel", addCarToService);
 router.put("/add-bikemodel", addBikeToService);
+
+// ***************************************************************************************************************
+//                                             Admin update serice 
+// ***************************************************************************************************************
+
+
+router.put("/update-service", updateCarService);
+
 
 module.exports = router;

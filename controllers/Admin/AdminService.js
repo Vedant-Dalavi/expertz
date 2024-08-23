@@ -14,8 +14,11 @@ const { model } = require("mongoose");
 require("dotenv").config();
 
 
+// **********************************************************************************************************
+//                                                  Create services
+// **********************************************************************************************************
 
-exports.createNewCarService = async (req, res) => {
+exports. createNewCarService = async (req, res) => {
     try {
         const { serviceName, desc, TnC } = req.body;
 
@@ -68,7 +71,7 @@ exports.createNewCarService = async (req, res) => {
         });
 
         return res.status(200).json({
-            success: false,
+            success: true,
             message: "New service created successfully",
             data: newService
         })
@@ -350,6 +353,94 @@ exports.addBikeToService = async (req, res) => {
         });
     }
 }
+
+// **********************************************************************************************************
+//                                                  Update services
+// **********************************************************************************************************
+
+exports.updateCarService = async (req, res) => {
+    try {
+        const { serviceName,newServiceName, desc, TnC } = req.body;
+
+        const contentFiles =  null
+
+
+        const service = await CarServices.findOne({ serviceName });
+
+        if (!service) {
+            return res.status(404).json({
+                success: false,
+                message: "This service does not exits"
+            });
+        }
+
+        // upload images to cloudinary
+
+        const uploadedContentUrls = [];
+
+        if (contentFiles) {
+            if (Array.isArray(contentFiles)) {
+                for (const file of contentFiles) {
+                    const uploadedContent = await uploadImageToCloudinary(
+                        file,
+                        process.env.FOLDER_NAME
+                    );
+                    uploadedContentUrls.push(uploadedContent.url);
+                }
+            } else {
+                const uploadedContent = await uploadImageToCloudinary(
+                    contentFiles,
+                    process.env.FOLDER_NAME
+                );
+                uploadedContentUrls.push(uploadedContent.url);
+            }
+        }
+
+
+        if (newServiceName) {
+            service.serviceName = newServiceName
+        }
+
+        if (desc) {
+            service.desc = desc
+        }
+
+        if (TnC) {
+            service.TnC = TnC
+        }
+
+        service.save();
+
+
+
+        // const newService = await CarServices.create({
+        //     serviceName,
+        //     desc,
+        //     TnC,
+        //     images: uploadedContentUrls,
+        // });
+
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Service Updated successfully",
+            data: newService
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error updating services. Error:${error}`
+        })
+    }
+};
+
+
+
+
+
+
 
 
 
