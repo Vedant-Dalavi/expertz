@@ -18,7 +18,7 @@ require("dotenv").config();
 //                                                  Create services
 // **********************************************************************************************************
 
-exports. createNewCarService = async (req, res) => {
+exports.createNewCarService = async (req, res) => {
     try {
         const { serviceName, desc, TnC } = req.body;
 
@@ -210,9 +210,9 @@ exports.getAllBikeServices = async (req, res) => {
 
 exports.addCarToService = async (req, res) => {
     try {
-        const { serviceId, brand, carName, modelDetails } = req.body;
+        const { serviceName, brand, carName, modelDetails } = req.body;
 
-        if (!serviceId || !brand || !carName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
+        if (!serviceName || !brand || !carName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: "All details are required, including a non-empty array of modelDetails"
@@ -220,7 +220,7 @@ exports.addCarToService = async (req, res) => {
         }
 
         // Find the service by ID
-        const service = await CarServices.findById(serviceId);
+        const service = await CarServices.findOne({ serviceName });
         if (!service) {
             return res.status(404).json({
                 success: false,
@@ -250,18 +250,23 @@ exports.addCarToService = async (req, res) => {
                 });
             } else {
                 // Car exists, add the models to the car
+                let duplicateModels = [];
                 modelDetails.forEach(modelDetail => {
                     let modelIndex = service.brands[brandIndex].cars[carIndex].models.findIndex(m => m.model === modelDetail.model);
 
                     if (modelIndex === -1) {
                         service.brands[brandIndex].cars[carIndex].models.push(modelDetail);
                     } else {
-                        return res.status(500).json({
-                            success: false,
-                            message: `Model ${modelDetail.model} already exists for this car`
-                        });
+                        duplicateModels.push(modelDetail.model);
                     }
                 });
+
+                if (duplicateModels.length > 0) {
+                    return res.status(409).json({
+                        success: false,
+                        message: `The following models already exist for this car: ${duplicateModels.join(', ')}`
+                    });
+                }
             }
         }
 
@@ -276,7 +281,7 @@ exports.addCarToService = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: `Error while adding car models to service. Error: ${error}`
+            message: `Error while adding car models to service. Error: ${error.message}`
         });
     }
 }
@@ -313,28 +318,33 @@ exports.addBikeToService = async (req, res) => {
                 }]
             });
         } else {
-            // Brand exists, check for the car
-            let bikeIndex = service.brands[brandIndex].bikes.findIndex(c => c.bikeName === bikeName);
+            // Brand exists, check for the bike
+            let bikeIndex = service.brands[brandIndex].bikes.findIndex(b => b.bikeName === bikeName);
             if (bikeIndex === -1) {
-                // Car doesn't exist, create it
+                // Bike doesn't exist, create it
                 service.brands[brandIndex].bikes.push({
                     bikeName: bikeName,
                     models: modelDetails // Add all models at once
                 });
             } else {
-                // Car exists, add the models to the car
+                // Bike exists, add the models to the bike
+                let duplicateModels = [];
                 modelDetails.forEach(modelDetail => {
                     let modelIndex = service.brands[brandIndex].bikes[bikeIndex].models.findIndex(m => m.model === modelDetail.model);
 
                     if (modelIndex === -1) {
                         service.brands[brandIndex].bikes[bikeIndex].models.push(modelDetail);
                     } else {
-                        return res.status(500).json({
-                            success: false,
-                            message: `Model ${modelDetail.model} already exists for this car`
-                        });
+                        duplicateModels.push(modelDetail.model);
                     }
                 });
+
+                if (duplicateModels.length > 0) {
+                    return res.status(409).json({
+                        success: false,
+                        message: `The following models already exist for this bike: ${duplicateModels.join(', ')}`
+                    });
+                }
             }
         }
 
@@ -349,7 +359,7 @@ exports.addBikeToService = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: `Error while adding car models to service. Error: ${error}`
+            message: `Error while adding bike models to service. Error: ${error.message}`
         });
     }
 }
@@ -360,9 +370,9 @@ exports.addBikeToService = async (req, res) => {
 
 exports.updateCarService = async (req, res) => {
     try {
-        const { serviceName,newServiceName, desc, TnC } = req.body;
+        const { serviceName, newServiceName, desc, TnC } = req.body;
 
-        const contentFiles =  null
+        const contentFiles = null
 
 
         const service = await CarServices.findOne({ serviceName });
