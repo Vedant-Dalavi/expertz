@@ -43,7 +43,7 @@ const bookingSchema = new mongoose.Schema({
         model: {
             type: String
         },
-        vihicleNo: {
+        vehicleNo: {
             type: String
         }
     },
@@ -58,9 +58,9 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    createdAt:{
-        type:Date,
-        default:Date.now()
+    createdAt: {
+        type: Date,
+        default: Date.now()
     },
     status: {
         type: String,
