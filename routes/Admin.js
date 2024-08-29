@@ -30,6 +30,7 @@ const { isAdmin } = require("../middleware/auth");
 
 const { auth } = require("../middleware/auth");
 const { VehiclesInfo, BrandInfo } = require("../controllers/Vehicles");
+const { getAreaWisePendingBooking } = require("../controllers/Booking");
 
 // ***************************************************************************************************************
 //                                             Admin Auth Route
@@ -44,7 +45,7 @@ router.get("/getalluser", getAllUser);
 router.get("/getallworker", getAllWorker);
 
 // getAllBookings
-router.get("/getallbookings", getAllBooking);
+router.get("/getallbookings", getAreaWisePendingBooking);
 
 // router.post('/create-newservice', upload.array('images', 10), createNewService);
 

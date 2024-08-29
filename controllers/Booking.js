@@ -8,55 +8,59 @@ const otpGenerator = require("otp-generator");
 
 exports.newBooking = async (req, res) => {
     try {
-
         const { date, location, bookingSlot, serviceName, alternateNumber, vehicleDetail, price } = req.body;
-
 
         const userId = req.user.id;
 
-        if (!userId || !date || !bookingSlot || !alternateNumber) {
-            if (!location.long || !location.lat || !vehicleDetail || !price) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Enter all field of booking vehicle"
-                })
-            }
+        // Check for required fields
+        if (!userId || !date || !bookingSlot || !alternateNumber || !location || !location.long || !location.lat || !vehicleDetail || !price) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter all fields of booking vehicle"
+            });
         }
 
+        // Format the location as a GeoJSON Point
+        const formattedLocation = {
+            type: "Point",
+            coordinates: [parseFloat(location.long), parseFloat(location.lat)] // Ensure that the coordinates are numbers
+        };
 
+        // Create the booking with the formatted location
         const booked_vehicle = await Booking.create({
             bookedBy: userId,
             date,
             serviceName,
-            location,
+            location: formattedLocation,
             bookingSlot,
             alternateNumber,
             vehicleDetail,
             price
-        })
+        });
 
-
-        const updateUser = await User.findByIdAndUpdate({ _id: userId }, {
+        // Update the user's bookings array
+        await User.findByIdAndUpdate(userId, {
             $push: {
                 bookings: booked_vehicle._id
             }
-        })
+        });
 
         return res.status(200).json({
             success: true,
-            message: "vehicle booked Successfully",
+            message: "Vehicle booked successfully",
             data: booked_vehicle
-        })
+        });
 
     } catch (error) {
-        console.log("Error in Booking vehicle" + error)
+        console.error("Error in booking vehicle:", error);
 
         return res.status(500).json({
             success: false,
             message: error.message
-        })
+        });
     }
-}
+};
+
 
 exports.getUserBooking = async (req, res) => {
 
@@ -333,6 +337,52 @@ exports.completeBooking = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: `Error in Completing Booking`
+        })
+
+    }
+}
+
+exports.getAreaWisePendingBooking = async (req, res) => {
+    try {
+        const { location } = req.body;
+
+        if (!location.lat || !location.long) {
+            return res.status(404).json({
+
+                success: false,
+                message: "Location is required"
+            })
+        }
+
+        const getPendingBooking = await Booking.find({
+            "location": {
+                "$geoWithin": {
+                    "$centerSphere": [
+                        [20.976662472375065, 77.77816310905204], // [latitude, longitude]
+                        5 / 6378.1 // 5 km converted to radians
+                    ]
+                }
+            },
+            "status": "Pending"
+        })
+
+        if (!getPendingBooking) {
+            return res.status(400).json({
+                success: false,
+                message: "No booking found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Pending booking fetched successfully",
+            data: getPendingBooking
+        })
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while getting pendign bookings. Error:${error}`
         })
 
     }

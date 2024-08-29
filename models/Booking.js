@@ -1,73 +1,65 @@
 const mongoose = require('mongoose');
 
-const bookingSchema = new mongoose.Schema({
+const BookingSchema = new mongoose.Schema({
     bookedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
+        required: true
+    },
+    date: {
+        type: String, // or Date if you prefer to use Date objects
         required: true
     },
     serviceName: {
         type: String,
-        required: true,
+        required: true
     },
-    date: {
-        type: String,
-        trim: true,
-    },
-    location:
-    {
-        lat: {
-            type: String,
-            // require:true
+    location: {
+        type: {
+            type: String, // 'type' must be 'Point'
+            enum: ['Point'], // Must be 'Point'
+            required: true
         },
-        long: {
-            type: String,
-            // required:true
+        coordinates: {
+            type: [Number], // Array of numbers: [longitude, latitude]
+            required: true
         }
     },
     bookingSlot: {
         type: String,
-        // required: true
+        required: true
     },
     alternateNumber: {
         type: Number,
+        required: true
     },
-    vehicleDetail:
-    {
-        brand: {
-            type: String
-        },
-        vehicleName: {
-            type: String,
-        },
-        model: {
-            type: String
-        },
-        vehicleNo: {
-            type: String
-        }
-    },
-    acceptedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
-    confirmCode: {
-        type: String,
-        // required: true
+    vehicleDetail: {
+        brand: String,
+        vehicleName: String,
+        model: String,
+        vihicleNo: String,
     },
     price: {
         type: String,
-        required: true,
+        required: true
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     status: {
         type: String,
-        default: "Pending",
-        enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
+        default: 'Pending' // Or whatever default status you want
+    },
+    acceptedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    confirmCode: {
+        type: String
     }
+}, {
+    timestamps: true
+});
 
-})
-
-module.exports = mongoose.model("Booking", bookingSchema)
+module.exports = mongoose.model('Booking', BookingSchema);
