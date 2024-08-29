@@ -28,7 +28,6 @@ exports.getAllUser = async (req, res) => {
     }
 }
 
-
 exports.getUserCar = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -135,6 +134,16 @@ exports.getUserBooking = async (req, res) => {
 exports.getAllServices = async (req,res) =>{
     try {
         const services = await Services.find()
+    } catch (error) {
+        
+    }
+}
+
+exports.updateUser = async (req,res) =>{
+    try {
+        
+        
+
     } catch (error) {
         
     }

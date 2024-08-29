@@ -15,6 +15,8 @@ const {
     getAllCarServices,
     getAllBikeServices,
     updateCarService,
+    updateModelPrice,
+    deleteModel,
 } = require("../controllers/Admin/AdminService");
 
 const {
@@ -75,11 +77,13 @@ router.put("/add-carmodel", addCarToService);
 router.put("/add-bikemodel", addBikeToService);
 
 // ***************************************************************************************************************
-//                                             Admin update serice 
+//                                             Admin update service 
 // ***************************************************************************************************************
 
 
 router.put("/update-service", updateCarService);
+router.put("/update-modelprice", updateModelPrice);
+router.put("/delete-model", deleteModel);
 
 
 module.exports = router;

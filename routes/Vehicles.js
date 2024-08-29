@@ -42,7 +42,7 @@ router.get("/getuserbike", auth, getUserBike);
 //                                  Booking Routes
 // *******************************************************************************************************
 
-router.delete("/deletecar", auth, deleteCar);
+router.put("/deletecar", auth, deleteCar);
 
 router.post("/new-booking", newBooking);
 

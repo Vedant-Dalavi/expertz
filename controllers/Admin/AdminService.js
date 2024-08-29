@@ -446,6 +446,147 @@ exports.updateCarService = async (req, res) => {
     }
 };
 
+exports.updateModelPrice = async (req, res) => {
+    try {
+        const { serviceName, brandName, carName, modelName, newPrice } = req.body; // Extracting data from request body
+
+        // Validate required fields
+        if (!serviceName || !brandName || !carName || !modelName || !newPrice) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required (serviceName, brandName, carName, modelName, newPrice)',
+            });
+        }
+
+        // Update the price of the specific model
+        const updatedService = await Service.findOneAndUpdate(
+            {
+                serviceName: serviceName, // Find the service document by name
+                'brands.brand': brandName, // Find the specific brand by name
+                'brands.cars.carName': carName, // Find the specific car by name
+                'brands.cars.models.model': modelName, // Find the specific model by name
+            },
+            {
+                $set: {
+                    'brands.$[brand].cars.$[car].models.$[model].price': newPrice, // Set the new price
+                },
+            },
+            {
+                arrayFilters: [
+                    { 'brand.brand': brandName }, // Filter to match the brand by name
+                    { 'car.carName': carName }, // Filter to match the car by name
+                    { 'model.model': modelName }, // Filter to match the model by name
+                ],
+                new: true, // Return the updated document
+            }
+        );
+
+        // Check if the update was successful
+        if (!updatedService) {
+            return res.status(404).json({
+                success: false,
+                message: 'Service, brand, car, or model not found',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Model price updated successfully',
+            data: updatedService,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error while updating model price. Error: ${error.message}`,
+        });
+    }
+};
+
+
+// pending
+exports.deleteModel = async (req, res) => {
+    try {
+        const { serviceName, brandName, carName, modelName } = req.body; // Extracting data from request body
+
+        // Validate required fields
+        if (!serviceName || !brandName || !carName || !modelName) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required (serviceName, brandName, carName, modelName)',
+            });
+        }
+
+        // Step 1: Delete the model from the service document
+        const updatedService = await Service.findOneAndUpdate(
+            {
+                serviceName: serviceName, // Find the service by name
+                'brands.brand': brandName, // Find the brand by name
+                'brands.cars.carName': carName, // Find the car by name
+            },
+            {
+                $pull: {
+                    'brands.$[brand].cars.$[car].models': { model: modelName } // Remove the model by name
+                },
+            },
+            {
+                arrayFilters: [
+                    { 'brand.brand': brandName }, // Filter to match the brand by name
+                    { 'car.carName': carName }, // Filter to match the car by name
+                ],
+                new: true, // Return the updated document
+            }
+        );
+
+        // Check if the update in the service document was successful
+        if (!updatedService) {
+            return res.status(404).json({
+                success: false,
+                message: 'Service, brand, or car not found, or model does not exist',
+            });
+        }
+
+        // Step 2: Delete the model from the corresponding car document
+        const updatedCar = await Cars.findOneAndUpdate(
+            {
+                brand: brandName, // Find the car by brand name
+                carName: carName, // Find the car by name
+            },
+            {
+                $pull: {
+                    models: modelName, // Remove the model by name
+                },
+            },
+            { new: true } // Return the updated document
+        );
+
+        // Check if the update in the car document was successful
+        if (!updatedCar) {
+            return res.status(404).json({
+                success: false,
+                message: 'Car or model not found',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Model deleted successfully from service and car documents',
+            data: {
+                updatedService,
+                updatedCar,
+            },
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error while deleting model. Error: ${error.message}`,
+        });
+    }
+};
+
+
+
 
 
 

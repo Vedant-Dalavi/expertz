@@ -67,37 +67,42 @@ exports.addCar = async (req, res) => {
 }
 
 exports.deleteCar = async (req, res) => {
-
     try {
+        const { carId } = req.body;  // Extract carId from the request body
+        const userId = req.user.id;  // Get userId from the request user object
 
-        const carId = req.body;
-        const userId = req.user.id
         if (!carId) {
-            return res.status(404).jsonn({
+            return res.status(400).json({
                 success: false,
-                message: "carId not found"
-            })
+                message: "carId is required"
+            });
         }
 
-        const deletedCar = await User.findByIdAndDelete({ _id: userId }, {
-            $pull: {
-                cars: _id=carId
-            }
-        })
+        // Update user by pulling the car with the specific carId from the cars array
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,  // Find user by their ID
+            { $pull: { cars: { _id: carId } } },  // Remove car object with the matching _id from cars array
+            { new: true }  // Return the updated user document
+        );
+
+        // Check if the user was found and the car was removed
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found or car not found in user's cars"
+            });
+        }
 
         return res.status(200).json({
             success: true,
             message: "User Car Deleted Successfully",
-            data: deletedCar
-        })
+            // data: updatedUser
+        });
 
     } catch (error) {
-
         return res.status(500).json({
             success: false,
-            message: `Error While Deleting user Car. Error: ${error}`
-        })
-
+            message: `Error While Deleting User Car. Error: ${error}`
+        });
     }
-
-}
+};
