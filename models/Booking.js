@@ -37,7 +37,7 @@ const BookingSchema = new mongoose.Schema({
         brand: String,
         vehicleName: String,
         model: String,
-        vihicleNo: String,
+        vehicleNo: String,
     },
     price: {
         type: String,
