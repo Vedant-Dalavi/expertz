@@ -131,20 +131,46 @@ exports.getUserBooking = async (req, res) => {
 
 }
 
-exports.getAllServices = async (req,res) =>{
+exports.getAllServices = async (req, res) => {
     try {
         const services = await Services.find()
     } catch (error) {
-        
+
     }
 }
 
-exports.updateUser = async (req,res) =>{
+exports.updateUser = async (req, res) => {
     try {
-        
-        
+        const { userName, email, phoneNo, permanentAdd } = req.body;
+        const userId = req.user.id;
+
+        if (!userId) {
+
+            return res.status(404).json({
+                success: false,
+                message: "userId not found"
+            })
+
+        }
+
+        const user = await User.findById({ _id: userId });
+
+        user.userName = userName || user.userName;
+        user.phoneNo = phoneNo || user.phoneNo;
+        user.email = email || user.email;
+        user.permanentAdd = permanentAdd || user.permanentAdd;
+
+        user.save();
+
+
+        return res.status(200).json({
+            success: true,
+            messsage: "User updated successfully",
+            user
+        })
+
 
     } catch (error) {
-        
+
     }
 }

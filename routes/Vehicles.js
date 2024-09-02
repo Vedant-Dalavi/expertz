@@ -44,7 +44,7 @@ router.get("/getuserbike", auth, getUserBike);
 
 router.put("/deletecar", auth, deleteCar);
 
-router.post("/new-booking", newBooking);
+// router.post("/new-booking", newBooking);
 
 
 module.exports = router
