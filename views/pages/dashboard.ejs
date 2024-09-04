@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
+  <title>
+    <%= title %>
+  </title>
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="/css/app.min.css" />
+  <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
+  <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <!-- Custom style CSS -->
+  <link rel="stylesheet" href="/css/custom.css" />
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+</head>
+
+<body>
+  <div class="loader"></div>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <%- include('../partial/navbar'); %>
+      <%- include('../partial/sidebar'); %>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header">
+            <h1>Dashboard</h1>
+          </div>
+          <div class="section-body">
+            <!-- Key Metrics -->
+            <div class="row">
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-primary">
+                    <i class="fas fa-concierge-bell"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>Total Services</h4>
+                    </div>
+                    <div class="card-body" id="total-services">0</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-danger">
+                    <i class="fas fa-car"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>Total Vehicles</h4>
+                    </div>
+                    <div class="card-body" id="total-vehicles">0</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-warning">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>Pending Services</h4>
+                    </div>
+                    <div class="card-body" id="pending-services">0</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-statistic-1">
+                  <div class="card-icon bg-success">
+                    <i class="fas fa-dollar-sign"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="card-header">
+                      <h4>Today's Revenue</h4>
+                    </div>
+                    <div class="card-body" id="todays-revenue">$0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Services Overview Table -->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Services Overview</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="services-overview" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Service Name</th>
+                            <th>Price</th>
+                            <th>Includes</th>
+                            <th>Service Info</th>
+                            <th>Required Time</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vehicle Overview Table -->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Vehicle Management Overview</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="vehicles-overview" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>Model Name</th>
+                            <th>Model Year</th>
+                            <th>Service Taken</th>
+                            <th>Price Charged</th>
+                            <th>Date of Service</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %>
+      <%- include('../partial/site-settings.ejs'); %>
+    </div>
+  </div>
+  <!-- General JS Scripts -->
+  <script src="/js/app.min.js"></script>
+  <!-- JS Libraries -->
+  <script src="/bundles/datatables/datatables.min.js"></script>
+  <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
+  <!-- Custom JS File -->
+  <script src="/js/scripts.js"></script>
+  <script src="/js/custom.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      // Fetch and populate the Total Services and Vehicles metrics
+      fetch('/api/v1/services').then(response => response.json()).then(data => {
+        $('#total-services').text(data.length);
+      });
+
+      fetch('/api/v1/vehicles').then(response => response.json()).then(data => {
+        $('#total-vehicles').text(data.length);
+      });
+
+      // Initialize Services Overview DataTable
+      $("#services-overview").DataTable({
+        scrollX: true,
+        ajax: {
+          url: "/api/v1/services",
+          type: "GET",
+          dataSrc: ""
+        },
+        columns: [
+          { data: "serviceName" },
+          { data: "price" },
+          { data: "includes" },
+          { data: "serviceInfo" },
+          { data: "requiredTime" },
+        ]
+      });
+
+      // Initialize Vehicles Overview DataTable
+      $("#vehicles-overview").DataTable({
+        scrollX: true,
+        ajax: {
+          url: "/api/v1/vehicles",
+          type: "GET",
+          dataSrc: ""
+        },
+        columns: [
+          { data: "modelName" },
+          { data: "modelYear" },
+          { data: "serviceTaken" },
+          { data: "priceCharged" },
+          { data: "dateOfService" },
+        ]
+      });
+    });
+  </script>
+</body>
+
+</html>

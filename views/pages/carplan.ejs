@@ -1,390 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title><%= title %></title>
-  <!-- General CSS Files -->
-  <link rel="stylesheet" href="/css/app.min.css" />
-  <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
-  <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
-  <!-- Template CSS -->
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <!-- Custom style CSS -->
-  <link rel="stylesheet" href="/css/custom.css" />
-  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
-  <style>
-    .model-sticker {
-      display: inline-block;
-      background-color: #007bff;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 5px;
-      margin: 2px;
-      position: relative;
-    }
-    .model-sticker .remove-sticker {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #dc3545;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 14px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
+    <title><%= title %></title>
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="/css/app.min.css" />
+    <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
+    <link rel="stylesheet" href="/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" />
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+    <!-- Custom style CSS -->
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <style>
+        .model-sticker {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 2px;
+            position: relative;
+        }
+
+        .model-sticker .remove-sticker {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="loader"></div>
-  <div id="app">
-    <div class="main-wrapper main-wrapper-1">
-      <%- include('../partial/navbar'); %>
-      <%- include('../partial/sidebar'); %>
+    <div class="loader"></div>
+    <div id="app">
+        <div class="main-wrapper main-wrapper-1">
+            <%- include('../partial/navbar'); %>
+            <%- include('../partial/sidebar'); %>
 
-      <!-- Main Content -->
-      <div class="main-content">
-        <section class="section">
-          <div class="section-body">
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Add Car Model</h4>
-                  </div>
-                  <div class="card-body">
-                    <form id="car-model-form">
-                      <div class="form-group">
-                        <label for="service">Service</label>
-                        <select id="service" class="form-control" required>
-                          <option value="">Select a service</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="brand">Brand</label>
-                        <select id="brand" class="form-control" required>
-                          <option value="">Select a brand</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="carName">Car Name</label>
-                        <select id="carName" class="form-control" required>
-                          <option value="">Select a car</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="model-table">Model</label>
-                        <div class="table-responsive">
-                          <table class="table table-bordered" id="model-table">
-                            <thead>
-                              <tr>
-                                <th>Model</th>
-                                <th>Price</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody></tbody>
-                          </table>
-                        </div>
-                        <div class="d-flex align-items-center mt-2">
-                          <input type="text" id="model" class="form-control" placeholder="Enter model name" />
-                          <input type="number" id="price" class="form-control ml-2" placeholder="Enter price" />
-                          <button type="button" id="add-model" class="btn btn-primary ml-2">Add</button>
-                        </div>
-                        <button type="button" id="add-all-models" class="btn btn-success mt-2">Add All Models</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
+            <!-- Main Content -->
+            <div class="main-content">
+                <section class="section">
+                    <div class="section-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Add Car Model</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="car-model-form">
+                                            <div class="form-group">
+                                                <label for="service">Service</label>
+                                                <select id="service" class="form-control" required>
+                                                    <option value="">Select a service</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="brand">Brand</label>
+                                                <select id="brand" class="form-control" required>
+                                                    <option value="">Select a brand</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="carName">Car Name</label>
+                                                <select id="carName" class="form-control" required>
+                                                    <option value="">Select a car</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="model-table">Model</label>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered" id="model-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Model</th>
+                                                                <th>Price</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="d-flex align-items-center mt-2">
+                                                    <select id="modelName" class="form-control" required>
+                                                        <option value="">Select a model</option>
+                                                    </select>
+                                                    <input type="text" id="price" class="form-control ml-2"
+                                                        placeholder="Enter price" />
+                                                    <button type="button" id="add-model"
+                                                        class="btn btn-primary ml-2">Add</button>
+                                                </div>
+                                                <button type="button" id="add-all-models"
+                                                    class="btn btn-success mt-2">Add All Models</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
 
-                <div class="card">
-                  <div class="card-header">
-                    <h4>Car Models Table</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                        <thead>
-                          <tr>
-                            <th>Service</th>
-                            <th>Brand</th>
-                            <th>Car Name</th>
-                            <th>Model</th>
-                            <th>Price</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody></tbody>
-                      </table>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Car Models Table</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover" id="save-state"
+                                                style="width: 100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Service</th>
+                                                        <th>Brand</th>
+                                                        <th>Car Name</th>
+                                                        <th>Model</th>
+                                                        <th>Price</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </div>
+                </section>
             </div>
-          </div>
-        </section>
-      </div>
-      <%- include('../partial/footer'); %>
-      <%- include('../partial/site-settings.ejs'); %>
+            <%- include('../partial/footer'); %>
+            <%- include('../partial/site-settings.ejs'); %>
+        </div>
     </div>
-  </div>
-  <!-- General JS Scripts -->
-  <script src="/js/app.min.js"></script>
-  <!-- JS Libraries -->
-  <script src="/bundles/datatables/datatables.min.js"></script>
-  <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
-  <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
+    <!-- General JS Scripts -->
+    <script src="/js/app.min.js"></script>
+    <!-- JS Libraries -->
+    <script src="/bundles/datatables/datatables.min.js"></script>
+    <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var table = $('#save-state').DataTable({
-        stateSave: true
-      });
+    <script>
+     $(document).ready(function () {
+            var table = $('#save-state').DataTable({
+                stateSave: true
+            });
 
-      // Fetch services and populate the service dropdown
-      fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.success && Array.isArray(data.data)) {
-          var serviceSelect = document.getElementById('service');
-          serviceSelect.innerHTML = '<option value="">Select a service</option>';
-          data.data.forEach(service => {
-            if (service._id && service.serviceName) {
-              var option = document.createElement('option');
-              option.value = service._id;
-              option.textContent = service.serviceName;
-              serviceSelect.appendChild(option);
-            }
-          });
-
-          // Populate table with data from the API
-          populateTable(data.data);
-
-          // Update brands dropdown based on selected service
-          serviceSelect.addEventListener('change', function () {
-            var selectedServiceId = this.value;
-            var brandSelect = document.getElementById('brand');
-            var carNameSelect = document.getElementById('carName');
-            brandSelect.innerHTML = '<option value="">Select a brand</option>';
-            carNameSelect.innerHTML = '<option value="">Select a car</option>';
-            document.getElementById('carName').value = '';
-
-            if (selectedServiceId) {
-              fetch('https://expterzbackend.onrender.com/api/v1/admin/getallvehicle', {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              })
-              .then(response => response.json())
-              .then(brandData => {
-                if (brandData && brandData.success && Array.isArray(brandData.data)) {
-                  brandSelect.innerHTML = '<option value="">Select a brand</option>';
-                  brandData.data.forEach(item => {
-                    if (item._id && item.brand) {
-                      var option = document.createElement('option');
-                      option.value = item._id;
-                      option.textContent = item.brand;
-                      brandSelect.appendChild(option);
+            function populateTable(services) {
+                services.forEach(service => {
+                    if (service.brands && Array.isArray(service.brands)) {
+                        service.brands.forEach(brand => {
+                            if (brand.cars && Array.isArray(brand.cars)) {
+                                brand.cars.forEach(car => {
+                                    if (car.models && Array.isArray(car.models)) {
+                                        car.models.forEach(model => {
+                                            table.row.add([
+                                                service.serviceName,
+                                                brand.brand || 'N/A',
+                                                car.carName || 'N/A',
+                                                model.model || 'N/A',
+                                                model.price || 'N/A',
+                                                '<button class="btn btn-warning edit-button">Edit</button>' +
+                                                '<button class="btn btn-danger delete-button">Delete</button>'
+                                            ]).draw(false);
+                                        });
+                                    }
+                                });
+                            }
+                        });
                     }
-                  });
-                } else {
-                  console.error('Invalid brands data:', brandData);
-                  alert('Failed to load brands: ' + (brandData.message || 'Unknown error'));
-                }
-              })
-              .catch(error => {
-                console.error('Error fetching brands:', error);
-                alert('Error fetching brands: ' + error.message);
-              });
+                });
             }
-          });
 
-          // Update car names based on selected brand
-          document.getElementById('brand').addEventListener('change', function () {
-            var selectedBrandId = this.value;
-            var carNameSelect = document.getElementById('carName');
-            carNameSelect.innerHTML = '<option value="">Select a car</option>';
-
-            if (selectedBrandId) {
-              fetch('https://expterzbackend.onrender.com/api/v1/admin/getallvehicle', {
+            // Fetch data from the API and populate the table
+            fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
                 method: 'GET',
                 headers: {
-                  'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'
                 }
-              })
-              .then(response => response.json())
-              .then(vehicleData => {
-                if (vehicleData && vehicleData.success && Array.isArray(vehicleData.data)) {
-                  var selectedBrand = vehicleData.data.find(item => item._id === selectedBrandId);
-                  if (selectedBrand && Array.isArray(selectedBrand.cars)) {
-                    carNameSelect.innerHTML = '<option value="">Select a car</option>';
-                    selectedBrand.cars.forEach(car => {
-                      var option = document.createElement('option');
-                      option.value = car._id;
-                      option.textContent = car.carName;
-                      carNameSelect.appendChild(option);
-                    });
-                  } else {
-                    console.error('Brand not found:', selectedBrandId);
-                    alert('Failed to load cars for the selected brand.');
-                  }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && Array.isArray(data.data)) {
+                    populateTable(data.data);
                 } else {
-                  console.error('Invalid vehicle data:', vehicleData);
-                  alert('Failed to load cars: ' + (vehicleData.message || 'Unknown error'));
+                    console.error('Unexpected response format:', data);
                 }
-              })
-              .catch(error => {
-                console.error('Error fetching cars:', error);
-                alert('Error fetching cars: ' + error.message);
-              });
-            }
-          });
-        } else {
-          console.error('Invalid services data:', data);
-          alert('Failed to load services: ' + (data.message || 'Unknown error'));
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching services:', error);
-        alert('Error fetching services: ' + error.message);
-      });
+            })
+            .catch(error => {
+                console.error('Error fetching services data:', error);
+            });
 
-      // Populate table with car models
-      function populateTable(services) {
-        services.forEach(service => {
-          if (service.brands && Array.isArray(service.brands)) {
-            service.brands.forEach(brand => {
-              if (brand.cars && Array.isArray(brand.cars)) {
-                brand.cars.forEach(car => {
-                  if (car.models && Array.isArray(car.models)) {
-                    car.models.forEach(model => {
-                      // Assuming we have a way to get price for each model, if not, you can leave it as empty or default
-                      table.row.add([
-                        service.serviceName,
-                        brand.brand,
-                        car.carName,
-                        model,
-                        'N/A', // Placeholder for price, update this with actual price if available
+            // Handle Edit and Delete button clicks
+            $('#save-state tbody').on('click', '.edit-button', function () {
+                var row = $(this).closest('tr');
+                var data = table.row(row).data();
+                alert('Edit functionality not implemented yet.\n' + 'Current data: ' + JSON.stringify(data));
+            });
+
+            $('#save-state tbody').on('click', '.delete-button', function () {
+                var row = $(this).closest('tr');
+                table.row(row).remove().draw();
+            });
+
+            // Add model to the model table
+            document.getElementById('add-model').addEventListener('click', function () {
+                var modelInput = document.getElementById('model');
+                var modelValue = modelInput.value.trim();
+                var priceInput = document.getElementById('price');
+                var priceValue = priceInput.value.trim();
+
+                if (modelValue && priceValue) {
+                    var modelTableBody = document.querySelector('#model-table tbody');
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${modelValue}</td>
+                        <td>${priceValue}</td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-model">Remove</button></td>
+                    `;
+                    modelTableBody.appendChild(row);
+                    modelInput.value = '';
+                    priceInput.value = '';
+
+                    // Remove row when the remove button is clicked
+                    row.querySelector('.remove-model').addEventListener('click', function () {
+                        modelTableBody.removeChild(row);
+                    });
+                } else {
+                    alert('Please enter both model and price.');
+                }
+            });
+        
+    // Handle Edit and Delete button clicks
+    $('#save-state tbody').on('click', '.edit-button', function () {
+        var row = $(this).closest('tr');
+        var data = table.row(row).data();
+        alert('Edit functionality not implemented yet.\n' + 'Current data: ' + JSON.stringify(data));
+    });
+
+    $('#save-state tbody').on('click', '.delete-button', function () {
+        var row = $(this).closest('tr');
+        table.row(row).remove().draw();
+    });
+
+
+    
+    
+            
+            // Fetch services and populate the service dropdown
+            fetch('https://expterzbackend.onrender.com/api/v1/admin/get-carservice', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.success && Array.isArray(data.data)) {
+                        var serviceSelect = document.getElementById('service');
+                        serviceSelect.innerHTML = '<option value="">Select a service</option>';
+                        data.data.forEach(service => {
+                            if (service._id && service.serviceName) {
+                                var option = document.createElement('option');
+                                option.value = service._id;
+                                option.textContent = service.serviceName;
+                                serviceSelect.appendChild(option);
+                            }
+                        });
+                    } else {
+                        alert('Failed to load services');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching services:', error);
+                });
+
+            // Update brands and cars based on selected service
+            document.getElementById('service').addEventListener('change', function () {
+                var brandSelect = document.getElementById('brand');
+                var carNameSelect = document.getElementById('carName');
+                var modelNameSelect = document.getElementById('modelName');
+                brandSelect.innerHTML = '<option value="">Select a brand</option>';
+                carNameSelect.innerHTML = '<option value="">Select a car</option>';
+                modelNameSelect.innerHTML = '<option value="">Select a model</option>';
+                modelNameSelect.disabled = true;
+
+                if (this.value) {
+                    fetch('/api/v1/admin/getallvehicle')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && Array.isArray(data.data)) {
+                                populateBrandDropdown(data.data);
+                            } else {
+                                alert('Failed to load brands and cars.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching vehicle data:', error);
+                        });
+                }
+            });
+
+            function populateBrandDropdown(vehicles) {
+                var brandSelect = document.getElementById('brand');
+                vehicles.forEach(vehicle => {
+                    if (vehicle._id && vehicle.brand) {
+                        var option = document.createElement('option');
+                        option.value = vehicle._id;
+                        option.textContent = vehicle.brand;
+                        brandSelect.appendChild(option);
+                    }
+                });
+
+                brandSelect.addEventListener('change', function () {
+                    var carNameSelect = document.getElementById('carName');
+                    var modelNameSelect = document.getElementById('modelName');
+                    carNameSelect.innerHTML = '<option value="">Select a car</option>';
+                    modelNameSelect.innerHTML = '<option value="">Select a model</option>';
+                    modelNameSelect.disabled = true;
+
+                    if (this.value) {
+                        var selectedBrand = vehicles.find(vehicle => vehicle._id === this.value);
+                        populateCarNameDropdown(selectedBrand.cars);
+                    } else {
+                        carNameSelect.disabled = true;
+                    }
+                });
+            }
+
+            function populateCarNameDropdown(cars) {
+                var carNameSelect = document.getElementById('carName');
+                cars.forEach(car => {
+                    if (car._id && car.carName) {
+                        var option = document.createElement('option');
+                        option.value = car._id;
+                        option.textContent = car.carName;
+                        carNameSelect.appendChild(option);
+                    }
+                });
+
+                carNameSelect.addEventListener('change', function () {
+                    var modelNameSelect = document.getElementById('modelName');
+                    modelNameSelect.innerHTML = '<option value="">Select a model</option>';
+
+                    if (this.value) {
+                        var selectedCar = cars.find(car => car._id === this.value);
+                        populateModelNameDropdown(selectedCar.models);
+                    } else {
+                        modelNameSelect.disabled = true;
+                    }
+                });
+            }
+
+            function populateModelNameDropdown(models) {
+                var modelNameSelect = document.getElementById('modelName');
+                models.forEach(model => {
+                    if (model) {
+                        var option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        modelNameSelect.appendChild(option);
+                    }
+                });
+                modelNameSelect.disabled = false;
+            }
+
+            // Add model to the table
+            document.getElementById('add-model').addEventListener('click', function () {
+                var modelSelect = document.getElementById('modelName');
+                var priceInput = document.getElementById('price');
+                var model = modelSelect.value;
+                var modelText = modelSelect.options[modelSelect.selectedIndex].text;
+                var price = priceInput.value;
+
+                if (model && price) {
+                    var tableBody = document.querySelector('#model-table tbody');
+                    var row = document.createElement('tr');
+
+                    var modelCell = document.createElement('td');
+                    modelCell.textContent = modelText;
+                    row.appendChild(modelCell);
+
+                    var priceCell = document.createElement('td');
+                    priceCell.textContent = price;
+                    row.appendChild(priceCell);
+
+                    var actionCell = document.createElement('td');
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'btn btn-danger btn-sm';
+                    deleteButton.addEventListener('click', function () {
+                        row.remove();
+                    });
+                    actionCell.appendChild(deleteButton);
+                    row.appendChild(actionCell);
+
+                    tableBody.appendChild(row);
+
+                    modelSelect.value = '';
+                    priceInput.value = '';
+                } else {
+                    alert('Please select a model and enter a price.');
+                }
+            });
+
+            // Add all models to the API and save them in the table
+            document.getElementById('add-all-models').addEventListener('click', function () {
+    var serviceSelect = document.getElementById('service');
+    var brandSelect = document.getElementById('brand');
+    var carNameSelect = document.getElementById('carName');
+    var modelTableBody = document.querySelector('#model-table tbody');
+    var modelRows = modelTableBody.querySelectorAll('tr');
+
+    var models = [];
+    modelRows.forEach(row => {
+        var model = row.querySelector('td:nth-child(1)').textContent.trim();
+        var price = row.querySelector('td:nth-child(2)').textContent.trim();
+        models.push({ model: model, price: price });
+    });
+
+    if (models.length > 0) {
+        var data = {
+            serviceName: serviceSelect.options[serviceSelect.selectedIndex].text,
+            brand: brandSelect.options[brandSelect.selectedIndex].text,
+            carName: carNameSelect.options[carNameSelect.selectedIndex].text,
+            modelDetails: models
+        };
+
+        fetch('http://expterzbackend.onrender.com/api/v1/admin/add-carmodel', {
+            method: 'PUT',  // Changed from POST to PUT
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(responseData => {
+            if (responseData.success) {
+                models.forEach(model => {
+                    table.row.add([
+                        data.serviceName,
+                        data.brand,
+                        data.carName,
+                        model.model,
+                        model.price,
                         '<button class="btn btn-warning edit-button">Edit</button>' +
                         '<button class="btn btn-danger delete-button">Delete</button>'
-                      ]).draw(false);
-                    });
-                  }
+                    ]).draw(false);
                 });
-              }
+               // Clear the form after adding all models
+               serviceSelect.selectedIndex = 0;
+                brandSelect.selectedIndex = 0;
+                carNameSelect.selectedIndex = 0;
+                modelTableBody.innerHTML = '';
+            } else {
+                alert('Failed to add car models');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else {
+        alert('No models to add.');
+    }
+});
+
+            // Handle delete row action in the main table
+            $('#save-state tbody').on('click', '.delete-row', function () {
+                table.row($(this).parents('tr')).remove().draw();
             });
-          }
         });
-      }
+    </script>
 
-      // Add model to the model table
-      document.getElementById('add-model').addEventListener('click', function () {
-        var modelInput = document.getElementById('model');
-        var modelValue = modelInput.value.trim();
-        var priceInput = document.getElementById('price');
-        var priceValue = priceInput.value.trim();
-
-        if (modelValue && priceValue) {
-          var modelTableBody = document.querySelector('#model-table tbody');
-          var row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${modelValue}</td>
-            <td>${priceValue}</td>
-            <td><button type="button" class="btn btn-danger btn-sm remove-model">Remove</button></td>
-          `;
-          modelTableBody.appendChild(row);
-          modelInput.value = '';
-          priceInput.value = '';
-
-          // Remove row when the remove button is clicked
-          row.querySelector('.remove-model').addEventListener('click', function () {
-            modelTableBody.removeChild(row);
-          });
-        } else {
-          alert('Please enter both model and price.');
-        }
-      });
-
-      // Add all models from the model table to the main table
-      document.getElementById('add-all-models').addEventListener('click', function () {
-        var modelTableBody = document.querySelector('#model-table tbody');
-        var rows = modelTableBody.querySelectorAll('tr');
-
-        rows.forEach(row => {
-          var cells = row.querySelectorAll('td');
-          var model = cells[0].textContent.trim();
-          var price = cells[1].textContent.trim();
-
-          table.row.add([
-            document.getElementById('service').options[document.getElementById('service').selectedIndex].text,
-            document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text,
-            document.getElementById('carName').options[document.getElementById('carName').selectedIndex].text,
-            model,
-            price,
-            '<button class="btn btn-warning edit-button">Edit</button>' +
-            '<button class="btn btn-danger delete-button">Delete</button>'
-          ]).draw(false);
-        });
-
-        // Clear the model table after adding to the main table
-        modelTableBody.innerHTML = '';
-      });
-
-      // Add event listener for form submission
-      document.getElementById('car-model-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var formData = {
-          service: document.getElementById('service').value,
-          brand: document.getElementById('brand').value,
-          carName: document.getElementById('carName').value,
-          models: Array.from(document.querySelectorAll('#model-table tbody tr')).map(row => {
-            var cells = row.querySelectorAll('td');
-            return {
-              model: cells[0].textContent.trim(),
-              price: cells[1].textContent.trim()
-            };
-          })
-        };
-        console.log('Form data:', formData);
-
-        // Add the new car model to the table
-        formData.models.forEach(model => {
-          table.row.add([
-            document.getElementById('service').options[document.getElementById('service').selectedIndex].text,
-            document.getElementById('brand').options[document.getElementById('brand').selectedIndex].text,
-            document.getElementById('carName').options[document.getElementById('carName').selectedIndex].text,
-            model.model,
-            model.price,
-            '<button class="btn btn-warning edit-button">Edit</button>' +
-            '<button class="btn btn-danger delete-button">Delete</button>'
-          ]).draw(false);
-        });
-
-        // Reset form
-        this.reset();
-        document.getElementById('model-table').querySelector('tbody').innerHTML = '';
-      });
-    });
-  </script>
-
-  <!-- Template JS File -->
-  <script src="/js/scripts.js"></script>
-  <!-- Custom JS File -->
-  <script src="/js/custom.js"></script>
+    <!-- Template JS File -->
+    <script src="/js/scripts.js"></script>
+    <!-- Custom JS File -->
+    <script src="/js/custom.js"></script>
 </body>
+
 </html>
