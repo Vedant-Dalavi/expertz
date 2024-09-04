@@ -3,6 +3,9 @@ const User = require("../models/User");
 const Worker = require("../models/worker");
 
 const otpGenerator = require("otp-generator");
+const mongoose = require("mongoose")
+const ObjectId = mongoose.Types.ObjectId;
+
 
 
 
@@ -364,6 +367,9 @@ exports.getAreaWisePendingBooking = async (req, res) => {
                 }
             },
             "status": "Pending"
+        }).populate({
+            path: "bookedBy",
+            select: "userName phoneNo"
         })
 
         if (!getPendingBooking) {
@@ -387,3 +393,67 @@ exports.getAreaWisePendingBooking = async (req, res) => {
 
     }
 }
+
+exports.getWorkerConfirmedBooking = async (req, res) => {
+    try {
+        const workerId = req.worker.id;
+
+        if (!workerId) {
+            return res.status(404).json({
+                success: false,
+                message: "workerId not found"
+            });
+        }
+
+        const confirmedBooking = await Booking.find({
+            status: "Confirmed",
+            acceptedBy: new ObjectId(workerId) // Use ObjectId to convert workerId properly
+        }).populate({
+            path: "bookedBy",
+            select: "userName phoneNo"
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "All Confirmed booking fetched successfully",
+            data: confirmedBooking
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching confirmed booking. Error: ${error}`
+        });
+    }
+};
+
+exports.getWorkerCompletedBooking = async (req, res) => {
+    try {
+        const workerId = req.worker.id;
+
+        if (!workerId) {
+            return res.status(404).json({
+                success: false,
+                message: "workerId not found"
+            });
+        }
+
+        const confirmedBooking = await Booking.find({
+            status: "Completed",
+            acceptedBy: new ObjectId(workerId) // Use ObjectId to convert workerId properly
+        }).populate({
+            path: "bookedBy",
+            select: "userName phoneNo"
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "All completed booking fetched successfully",
+            data: confirmedBooking
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching confirmed booking. Error: ${error}`
+        });
+    }
+};

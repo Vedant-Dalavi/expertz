@@ -29,20 +29,17 @@ const workerSchema = new mongoose.Schema({
         type: Date,
         // required: true
     },
-    addressProof: [
-        {
-            address: {
-                type: String,
-                // required: true,
-                trim: true
-            },
-            proof: {
-                type: String,
-                // required: true,
-            }
+    addressProof: {
+        address: {
+            type: String,
+            // required: true,
+            trim: true
         },
-
-    ],
+        proof: {
+            type: String,
+            // required: true,
+        }
+    },
     designation: {
         type: String,
     },
@@ -57,10 +54,6 @@ const workerSchema = new mongoose.Schema({
     accountType: {
         type: String,
         default: "Worker"
-    },
-    registeredOn: {
-        type: Date,
-        default: Date.now(),
     },
     booking: [
         {
@@ -86,6 +79,8 @@ const workerSchema = new mongoose.Schema({
         type: String,
     },
 
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model("Worker", workerSchema)

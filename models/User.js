@@ -54,13 +54,12 @@ const userSchema = new mongoose.Schema({
             ref: "Booking"
         }
     ],
-    registeredOn: {
-        type: Date,
-        default: Date.now()
-    },
     accountType: {
         type: String,
         default: "User"
+    },
+    permanentAdd: {
+        type: String
     },
     address: [
         {
@@ -70,6 +69,9 @@ const userSchema = new mongoose.Schema({
     token: {
         type: String,
     }
-})
+},
+    {
+        timestamps: true
+    })
 
 module.exports = mongoose.model("User", userSchema)

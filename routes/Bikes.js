@@ -21,7 +21,8 @@ router.get("/get-bikes", BikeInfo);
 
 // insert a bike in user's bike
 
-router.put("/addbike", addBike);
+router.put("bike/addbike", addBike);
+router.put("bike/deletebike", deleteBike);
 
 
 module.exports = router

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const userRoutes = require("./routes/User");
+const authRoute = require("./routes/Auth");
+const userRoute = require("./routes/User")
 const vehicleRoute = require("./routes/Vehicles");
 const bookingRoute = require("./routes/Bookings");
 const adminRoute = require("./routes/Admin");
@@ -70,12 +71,12 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
-const allowedPages = ['dashboard','company','brand','model','bmodel','bikebrand','Newservices','carplan','bikeplan','allorders','pending','confirm','complete','monthlyplan','worker','report', 'state']; // list of allowed pages
+const allowedPages = ['company','brand','model','bmodel','bikebrand','Newservices','carplan','bikeplan','allorders','pending','confirm','complete','monthlyplan','worker','report', 'state']; // list of allowed pages
 
 app.get('/:page', (req, res) => {
     const page = req.params.page;
     if (allowedPages.includes(page)) {
-        res.render(page,{ title: 'Admin Panel' });
+        res.render(page, { title: 'Admin Panel' });
     } else {
         res.render('errors-404')
     }
@@ -83,12 +84,13 @@ app.get('/:page', (req, res) => {
 
 
 // Routes
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/vehicles", vehicleRoute);
 app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/worker", workerRoute);
 app.use("/api/v1/service", serviceRoute);
+app.use("/api/v1/user", userRoute)
 
 // test route
 // app.use("/test", testRoute);

@@ -5,6 +5,7 @@ const Worker = require("../models/worker");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
 const Admin = require("../models/Admin");
+const { uploadImageToCloudinary } = require("../utils/contentUploader");
 // const mailSender = require("../utils/mailSender");
 // const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 // const Profile = require("../models/Profile");
@@ -359,8 +360,10 @@ exports.workerSignup = async (req, res) => {
             email,
             alternatePhoneNo,
             password,
-            confirmPassword,
+            address
         } = req.body;
+
+        const idProof = req.files.idProof;
 
         if (
             !firstName ||
@@ -369,7 +372,8 @@ exports.workerSignup = async (req, res) => {
             !email ||
             !alternatePhoneNo ||
             !password ||
-            !confirmPassword
+            !address ||
+            !idProof
         ) {
             return res.status(500).json({
                 success: false,
@@ -377,12 +381,12 @@ exports.workerSignup = async (req, res) => {
             });
         }
 
-        if (password !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: "Passwords and confirm Password does not match",
-            });
-        }
+        // if (password !== confirmPassword) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "Passwords and confirm Password does not match",
+        //     });
+        // }
 
         const existingUser = await Worker.findOne({ phoneNo });
         console.log("Existing User: " + existingUser)
@@ -395,6 +399,19 @@ exports.workerSignup = async (req, res) => {
 
         const hashPassword = await bcrypt.hash(password, 10);
 
+        const uploadedContent = await uploadImageToCloudinary(
+            idProof,
+            process.env.FOLDER_NAME
+        );
+
+        // uploadedContentUrls.push(uploadedContent.url);
+
+
+        const addressProof = {
+            address: address,
+            proof: uploadedContent.url
+        }
+
         const newWorker = await Worker.create({
             firstName,
             lastName,
@@ -402,6 +419,7 @@ exports.workerSignup = async (req, res) => {
             alternatePhoneNo: alternatePhoneNo || "",
             email,
             password: hashPassword,
+            addressProof,
             image: `https://api.dicebear.com/8.x/initials/svg?seed=${firstName}${lastName}`,
         });
 

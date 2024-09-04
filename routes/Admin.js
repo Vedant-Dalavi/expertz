@@ -47,7 +47,7 @@ router.get("/getalluser", getAllUser);
 router.get("/getallworker", getAllWorker);
 
 // getAllBookings
-router.get("/getallbookings", getAreaWisePendingBooking);
+router.post("/getallbookings", getAreaWisePendingBooking);
 
 // router.post('/create-newservice', upload.array('images', 10), createNewService);
 
