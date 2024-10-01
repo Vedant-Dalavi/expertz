@@ -71,7 +71,7 @@ app.get('/state', (req, res) => {
     res.render('state', { title: 'Admin Panel' });
 });
 
-const allowedPages = ['company', 'brand', 'model', 'bmodel', 'bikebrand', 'Newservices', 'carplan', 'bikeplan', 'allorders', 'pending', 'confirm', 'complete', 'monthlyplan', 'worker', 'report', 'state']; // list of allowed pages
+const allowedPages = ['dashboard','company','brand','model','bmodel','bikebrand','Newservices','carplan','bikeplan','allorders','pending','confirm','complete','monthlyplan','worker','report', 'state']; // list of allowed pages
 
 app.get('/:page', (req, res) => {
     const page = req.params.page;

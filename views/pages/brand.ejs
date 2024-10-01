@@ -116,7 +116,13 @@
         columns: [
           { data: "brand" },
           { data: "carName" },
-          { data: "modelNames" },
+          {
+            data: "modelNames",
+            render: function(data, type, row) {
+              var models = data.split(', ').map(model => `<option value="${model}">${model}</option>`).join('');
+              return `<select class="form-control model-dropdown">${models}</select>`;
+            }
+          },
           {
             data: null,
             className: "center",

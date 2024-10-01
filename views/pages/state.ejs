@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- datatables.html  21 Nov 2019 03:55:21 GMT -->
 
 <head>
   <meta charset="UTF-8" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport" />
-  <title>
-    <%=title%>
-  </title>
+  <title>Vehicle Selector</title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="/css/app.min.css" />
   <link rel="stylesheet" href="/bundles/datatables/datatables.min.css" />
@@ -26,50 +23,153 @@
     <div class="main-wrapper main-wrapper-1">
       <%- include('../partial/navbar'); %> <%- include('../partial/sidebar'); %>
 
-          <!-- Main Content -->
-          <div class="main-content">
-            <section class="section">
-              <div class="section-body">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4>Table With State Save</h4>
-                      </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table table-striped table-hover" id="save-state" style="width: 100%">
-                            <thead>
-                              <tr>
-                                <th>_id</th>
-                                <th>userName</th>
-                                <th>phoneNo</th>
-                                <th>email</th>
-                              </tr>
-                            </thead>
-                            <tbody></tbody>
-                          </table>
-                        </div>
-                      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Select Vehicle Details</h4>
+                  </div>
+                  <div class="card-body">
+                    <!-- Dropdown for Brand -->
+                    <div class="form-group">
+                      <label for="brand">Brand</label>
+                      <select id="brand" class="form-control">
+                        <option value="">Select a brand</option>
+                      </select>
+                    </div>
+
+                    <!-- Dropdown for Car Name -->
+                    <div class="form-group">
+                      <label for="carName">Car Name</label>
+                      <select id="carName" class="form-control" disabled>
+                        <option value="">Select a car name</option>
+                      </select>
+                    </div>
+
+                    <!-- Dropdown for Model Name -->
+                    <div class="form-group">
+                      <label for="modelName">Model Name</label>
+                      <select id="modelName" class="form-control" disabled>
+                        <option value="">Select a model name</option>
+                      </select>
+                    </div>
+
+                    <!-- Table to display some data, can be customized as needed -->
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="save-state" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th>_id</th>
+                            <th>userName</th>
+                            <th>phoneNo</th>
+                            <th>email</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
-          <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs');%>
+        </section>
+      </div>
+      <%- include('../partial/footer'); %> <%- include('../partial/site-settings.ejs'); %>
     </div>
   </div>
   <!-- General JS Scripts -->
   <script src="/js/app.min.js"></script>
-  <!-- JS Libraies -->
+  <!-- JS Libraries -->
   <script src="/bundles/datatables/datatables.min.js"></script>
   <script src="/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script src="/bundles/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Page Specific JS File -->
-  <!-- <script src="/js/page/datatables.js"></script> -->
 
+  <!-- Page Specific JS File -->
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const brandSelect = document.getElementById('brand');
+      const carNameSelect = document.getElementById('carName');
+      const modelNameSelect = document.getElementById('modelName');
+
+      // Fetch all vehicles data from the API
+      fetch('/api/v1/admin/getallvehicle')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const vehicles = data.data;
+            populateBrandDropdown(vehicles);
+          } else {
+            alert('Failed to fetch vehicles data.');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching vehicles data:', error);
+        });
+
+      function populateBrandDropdown(vehicles) {
+        vehicles.forEach(vehicle => {
+          const option = document.createElement('option');
+          option.value = vehicle._id;
+          option.textContent = vehicle.brand;
+          brandSelect.appendChild(option);
+        });
+
+        // Enable carName dropdown and filter options when a brand is selected
+        brandSelect.addEventListener('change', function() {
+          carNameSelect.innerHTML = '<option value="">Select a car name</option>';
+          modelNameSelect.innerHTML = '<option value="">Select a model name</option>';
+          modelNameSelect.disabled = true;
+
+          if (this.value) {
+            const selectedBrand = vehicles.find(vehicle => vehicle._id === this.value);
+            populateCarNameDropdown(selectedBrand.cars);
+          } else {
+            carNameSelect.disabled = true;
+          }
+        });
+      }
+
+      function populateCarNameDropdown(cars) {
+        carNameSelect.disabled = false;
+
+        cars.forEach(car => {
+          const option = document.createElement('option');
+          option.value = car._id;
+          option.textContent = car.carName;
+          carNameSelect.appendChild(option);
+        });
+
+        // Enable modelName dropdown and filter options when a carName is selected
+        carNameSelect.addEventListener('change', function() {
+          modelNameSelect.innerHTML = '<option value="">Select a model name</option>';
+
+          if (this.value) {
+            const selectedCar = cars.find(car => car._id === this.value);
+            populateModelNameDropdown(selectedCar.models);
+          } else {
+            modelNameSelect.disabled = true;
+          }
+        });
+      }
+
+      function populateModelNameDropdown(models) {
+        modelNameSelect.disabled = false;
+
+        models.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.textContent = model;
+          modelNameSelect.appendChild(option);
+        });
+      }
+    });
+
+    // Initialize DataTables
     $("#save-state").DataTable({
       scrollX: true,
       stateSave: true,
@@ -92,7 +192,5 @@
   <!-- Custom JS File -->
   <script src="/js/custom.js"></script>
 </body>
-
-<!-- datatables.html  21 Nov 2019 03:55:25 GMT -->
 
 </html>
