@@ -158,7 +158,7 @@ exports.isWorker = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 message: "this is protected route for Worker only ",
-                worker:req.worker
+                worker: req.worker
             });
         }
 

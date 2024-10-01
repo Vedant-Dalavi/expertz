@@ -30,3 +30,13 @@ exports.newService = async (req, res) => {
         })
     }
 }
+
+// exports.getServicePrice = async (req,res) =>{
+//     try {
+
+//         const
+        
+//     } catch (error) {
+        
+//     }
+// }

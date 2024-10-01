@@ -357,11 +357,14 @@ exports.getAreaWisePendingBooking = async (req, res) => {
             })
         }
 
+        const user = await Worker.findById({ _id: req.worker.id })
+
+
         const getPendingBooking = await Booking.find({
             "location": {
                 "$geoWithin": {
                     "$centerSphere": [
-                        [20.976662472375065, 77.77816310905204], // [latitude, longitude]
+                        [user.baseLocation.lat, user.baseLocation.long], // [latitude, longitude]
                         5 / 6378.1 // 5 km converted to radians
                     ]
                 }

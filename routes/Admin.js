@@ -28,7 +28,7 @@ const {
 
 
 const upload = require("../middleware/fileUpload");
-const { isAdmin } = require("../middleware/auth");
+const { isAdmin, authWorker } = require("../middleware/auth");
 
 const { auth } = require("../middleware/auth");
 const { VehiclesInfo, BrandInfo } = require("../controllers/Vehicles");
@@ -47,7 +47,7 @@ router.get("/getalluser", getAllUser);
 router.get("/getallworker", getAllWorker);
 
 // getAllBookings
-router.post("/getallbookings", getAreaWisePendingBooking);
+router.post("/getallbookings", auth, authWorker, getAreaWisePendingBooking);
 
 // router.post('/create-newservice', upload.array('images', 10), createNewService);
 
