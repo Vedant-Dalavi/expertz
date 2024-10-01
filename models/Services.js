@@ -3,52 +3,48 @@ const mongoose = require("mongoose");
 const modelSchema = new mongoose.Schema({
     model: {
         type: String,
-        required: true, 
+        required: true,
     },
     price: {
-        type: Number, 
-        required: true, 
+        type: Number,
+        required: true,
     },
-}, { _id: false }); 
+}, { _id: false });
 
 const carSchema = new mongoose.Schema({
     carName: {
         type: String,
         required: true,
     },
-    models: [modelSchema] 
+    models: [modelSchema]
 }, { _id: false });
 
 const brandSchema = new mongoose.Schema({
     brand: {
         type: String,
-        required: true, 
+        required: true,
     },
-    cars: [carSchema], 
+    cars: [carSchema],
 }, { _id: false });
 
 const carServiceSchema = new mongoose.Schema({
     serviceName: {
         type: String,
-        required: true, 
+        required: true,
     },
     desc: {
         type: String,
-        required: true, 
+        required: true,
     },
     TnC: {
         type: String,
-        required: true, 
+        required: true,
     },
-    vehicleType: {
-        type: String,
-        required: true, 
-    },
-    brands: [brandSchema], 
+    brands: [brandSchema],
     images: [
         {
             type: String,
-            required: true, 
+            required: true,
         }
     ]
 });
