@@ -6,7 +6,8 @@ const {
 
     confirmBooking,
     completeBooking,
-    getWorkerConfirmedBooking
+    getWorkerConfirmedBooking,
+    getWorkerCompletedBooking
 
 } = require("../controllers/Booking")
 
@@ -19,5 +20,6 @@ router.put("/complete-booking", authWorker, isWorker, completeBooking);
 
 
 router.post("/getconfirmbooking", authWorker, isWorker, getWorkerConfirmedBooking);
+router.get("/getcompletebooking", authWorker, isWorker, getWorkerCompletedBooking);
 
 module.exports = router 
