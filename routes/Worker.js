@@ -18,6 +18,6 @@ router.put("/confirm-booking", authWorker, isWorker, confirmBooking);
 router.put("/complete-booking", authWorker, isWorker, completeBooking);
 
 
-router.get("/getconfirmbooking", authWorker, isWorker, getWorkerConfirmedBooking);
+router.post("/getconfirmbooking", authWorker, isWorker, getWorkerConfirmedBooking);
 
 module.exports = router 
