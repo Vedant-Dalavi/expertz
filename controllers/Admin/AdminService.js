@@ -15,7 +15,7 @@ require("dotenv").config();
 
 
 // **********************************************************************************************************
-//                                                  Create services
+//                                                   Car services
 // **********************************************************************************************************
 
 exports.createNewCarService = async (req, res) => {
@@ -75,75 +75,6 @@ exports.createNewCarService = async (req, res) => {
     }
 };
 
-// *********************************************************************************
-// *********************************************************************************
-
-exports.createNewBikeService = async (req, res) => {
-    try {
-        const { serviceName, desc, TnC } = req.body;
-
-        const contentFiles = req.files.content
-
-        if (!serviceName || !desc || !TnC || !contentFiles) {
-            return res.status(404).json({
-                success: false,
-                message: "All fields are required",
-            });
-        }
-
-        const service = await BikeServices.findOne({ serviceName });
-
-        if (service) {
-            return res.status(409).json({
-                success: false,
-                message: "This service already exists",
-            });
-        }
-
-
-        // upload images to cloudinary
-
-        const uploadedContentUrls = [];
-
-        if (Array.isArray(contentFiles)) {
-            for (const file of contentFiles) {
-                const uploadedContent = await uploadImageToCloudinary(
-                    file,
-                    process.env.FOLDER_NAME
-                );
-                uploadedContentUrls.push(uploadedContent.url);
-            }
-        } else {
-            const uploadedContent = await uploadImageToCloudinary(
-                contentFiles,
-                process.env.FOLDER_NAME
-            );
-            uploadedContentUrls.push(uploadedContent.url);
-        }
-
-
-
-        const newService = await BikeServices.create({
-            serviceName,
-            desc,
-            TnC,
-            images: uploadedContentUrls,
-        });
-
-        return res.status(200).json({
-            success: false,
-            message: "New Bike service created successfully",
-            data: newService
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: `Error while creating new Bike services. Error:${error}`
-        })
-    }
-};
-
 exports.getAllCarServices = async (req, res) => {
     try {
 
@@ -162,34 +93,6 @@ exports.getAllCarServices = async (req, res) => {
             success: true,
             messsage: "Car services fetched successfully",
             data: carServices
-        })
-
-    } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: `Error while fetching Bike services. Error: ${error}`
-        })
-
-    }
-}
-
-exports.getAllBikeServices = async (req, res) => {
-    try {
-
-        const bikeServices = await BikeServices.find();
-
-        if (!bikeServices) {
-            return res.status(404).json({
-                success: false,
-                message: "Bike services not found"
-            })
-        }
-
-        return res.status(200).json({
-            success: true,
-            messsage: "Bike services fetched successfully",
-            data: bikeServices
         })
 
     } catch (error) {
@@ -268,90 +171,6 @@ exports.addCarToService = async (req, res) => {
     }
 };
 
-
-exports.addBikeToService = async (req, res) => {
-    try {
-        const { serviceId, brand, bikeName, modelDetails } = req.body;
-
-        if (!serviceId || !brand || !bikeName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "All details are required, including a non-empty array of modelDetails"
-            });
-        }
-
-        // Find the service by ID
-        const service = await BikeServices.findById(serviceId);
-        if (!service) {
-            return res.status(404).json({
-                success: false,
-                message: "Service not found"
-            });
-        }
-
-        // Find the brand in the service or create a new one
-        let brandIndex = service.brands.findIndex(b => b.brand === brand);
-        if (brandIndex === -1) {
-            // Brand doesn't exist, create it
-            service.brands.push({
-                brand: brand,
-                bikes: [{
-                    bikeName: bikeName,
-                    models: modelDetails // Add all models at once
-                }]
-            });
-        } else {
-            // Brand exists, check for the bike
-            let bikeIndex = service.brands[brandIndex].bikes.findIndex(b => b.bikeName === bikeName);
-            if (bikeIndex === -1) {
-                // Bike doesn't exist, create it
-                service.brands[brandIndex].bikes.push({
-                    bikeName: bikeName,
-                    models: modelDetails // Add all models at once
-                });
-            } else {
-                // Bike exists, add the models to the bike
-                let duplicateModels = [];
-                modelDetails.forEach(modelDetail => {
-                    let modelIndex = service.brands[brandIndex].bikes[bikeIndex].models.findIndex(m => m.model === modelDetail.model);
-
-                    if (modelIndex === -1) {
-                        service.brands[brandIndex].bikes[bikeIndex].models.push(modelDetail);
-                    } else {
-                        duplicateModels.push(modelDetail.model);
-                    }
-                });
-
-                if (duplicateModels.length > 0) {
-                    return res.status(409).json({
-                        success: false,
-                        message: `The following models already exist for this bike: ${duplicateModels.join(', ')}`
-                    });
-                }
-            }
-        }
-
-        // Save the updated service document
-        await service.save();
-
-        return res.status(200).json({
-            success: true,
-            message: "Bike models and prices added successfully"
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: `Error while adding bike models to service. Error: ${error.message}`
-        });
-    }
-}
-
-// **********************************************************************************************************
-//                                                  Update services
-// **********************************************************************************************************
-
-
 exports.updateCarService = async (req, res) => {
     try {
         const { serviceName, newServiceName, desc, TnC } = req.body; // Include vehicleType if needed
@@ -404,13 +223,7 @@ exports.updateCarService = async (req, res) => {
     }
 };
 
-// *************************************************************************
-// *************************************************************************
-
-
-
-
-exports.updateModelPrice = async (req, res) => {
+exports.updateCarModelPrice = async (req, res) => {
     try {
         const { serviceName, brandName, carName, modelName, newPrice } = req.body;
 
@@ -467,10 +280,7 @@ exports.updateModelPrice = async (req, res) => {
     }
 };
 
-// *********************************************************************************
-// *********************************************************************************
-
-exports.deleteModel = async (req, res) => {
+exports.deleteCarModel = async (req, res) => {
     try {
         const { serviceName, brandName, carName, modelName } = req.body;
 
@@ -524,6 +334,190 @@ exports.deleteModel = async (req, res) => {
         });
     }
 };
+
+
+// *********************************************************************************
+//                                       Bike Service
+// *********************************************************************************
+
+exports.createNewBikeService = async (req, res) => {
+    try {
+        const { serviceName, desc, TnC } = req.body;
+
+        // Optional chaining in case no files are uploaded
+        const contentFiles = req.files?.content;
+
+        // Check if all required fields are present
+        if (!serviceName || !desc || !TnC || !contentFiles) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields (serviceName, desc, TnC, images) are required.",
+            });
+        }
+
+        // Check if the service already exists
+        const serviceExists = await BikeServices.findOne({ serviceName });
+        if (serviceExists) {
+            return res.status(409).json({
+                success: false,
+                message: "This bike service already exists.",
+            });
+        }
+
+        // Array to store uploaded image URLs
+        const uploadedContentUrls = [];
+
+        // Helper function to upload files to Cloudinary
+        const uploadToCloudinary = async (file) => {
+            const uploadedContent = await uploadImageToCloudinary(file, process.env.FOLDER_NAME);
+            uploadedContentUrls.push(uploadedContent.url);
+        };
+
+        // Check if multiple files or a single file and handle accordingly
+        if (Array.isArray(contentFiles)) {
+            await Promise.all(contentFiles.map(uploadToCloudinary));
+        } else {
+            await uploadToCloudinary(contentFiles);
+        }
+
+        // Create a new bike service
+        const newBikeService = new BikeServices({
+            serviceName,
+            desc,
+            TnC,
+            images: uploadedContentUrls,
+        });
+
+        // Save the new service
+        await newBikeService.save();
+
+        return res.status(201).json({
+            success: true,
+            message: "New bike service created successfully.",
+            data: newBikeService,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error creating new bike service. Error: ${error.message}`,
+        });
+    }
+};
+
+
+exports.getAllBikeServices = async (req, res) => {
+    try {
+
+        const bikeServices = await BikeServices.find();
+
+        if (!bikeServices) {
+            return res.status(404).json({
+                success: false,
+                message: "Bike services not found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            messsage: "Bike services fetched successfully",
+            data: bikeServices
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: `Error while fetching Bike services. Error: ${error}`
+        })
+
+    }
+}
+
+exports.addBikeToService = async (req, res) => {
+    try {
+        const { serviceName, brand, bikeName, modelDetails } = req.body;
+
+        // Validate input data
+        if (!serviceName || !brand || !bikeName || !Array.isArray(modelDetails) || modelDetails.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "All details are required, including a non-empty array of modelDetails."
+            });
+        }
+
+        // Find the service by ID
+        const service = await BikeServices.findOne({ serviceName });
+        if (!service) {
+            return res.status(404).json({
+                success: false,
+                message: "Service not found."
+            });
+        }
+
+        // Find or create brand
+        let brandData = service.brands.find(b => b.brand === brand);
+        if (!brandData) {
+            // Brand doesn't exist, create brand with the bike and models
+            brandData = {
+                brand,
+                bikes: [{
+                    bikeName,
+                    models: modelDetails // Add models to the newly created bike
+                }]
+            };
+            service.brands.push(brandData);
+        } else {
+            // Brand exists, find or create bike
+            let bikeData = brandData.bikes.find(b => b.bikeName === bikeName);
+            if (!bikeData) {
+                // Bike doesn't exist, create bike with models
+                bikeData = {
+                    bikeName,
+                    models: modelDetails // Add models to the newly created bike
+                };
+                brandData.bikes.push(bikeData);
+            } else {
+                // Bike exists, add new models (avoid duplicates)
+                const existingModels = bikeData.models.map(m => m.model);
+                const newModels = modelDetails.filter(md => !existingModels.includes(md.model));
+
+                if (newModels.length === 0) {
+                    return res.status(409).json({
+                        success: false,
+                        message: "All models already exist for this bike."
+                    });
+                }
+
+                // Add new models to the existing bike
+                newModels.forEach(model => {
+                    bikeData.models.push({
+                        model: model.model,
+                        price: model.price
+                    });
+                });
+            }
+        }
+
+        // Save the updated service document
+        await service.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Bike and models added/updated successfully.",
+            data: service
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Error while adding bike models to service. Error: ${error.message}`
+        });
+    }
+};
+
+
+
 
 
 
